@@ -1,7 +1,9 @@
 const authRoutes = require("./authRoutes")
+const postRoutes = require("./postRoutes")
 
 const routes = {
-    authRoutes
+    authRoutes,
+    postRoutes
 }
 
 module.exports = routes

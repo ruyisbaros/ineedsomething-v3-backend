@@ -29,6 +29,7 @@ mongoose.connect(process.env.DB_URL, {
 })
 //Routes
 app.use("/api/v3/auth", routes.authRoutes)
+app.use("/api/v3/posts", routes.postRoutes)
 
 
 app.listen(5000, () => {
