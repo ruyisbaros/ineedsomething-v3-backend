@@ -2,6 +2,7 @@ const { createJsonToken } = require("../helpers/createToken")
 const { createUsername } = require("../helpers/createUserName")
 const { sendNotifyEmail } = require("../helpers/emailService")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
 
 const authCtrl = {
@@ -64,7 +65,17 @@ const authCtrl = {
     },
     login: async (req, res) => {
         try {
-
+            const { email, password } = req.body
+            const user = await User.findOne({ email })
+            if (!user) {
+                return res.status(401).json({ message: `${email} email address not connected to an account!` });
+            }
+            const passwordCheck = await bcrypt.compare(password, user.password)
+            if (!passwordCheck) {
+                return res.status(500).json({ message: "Invalid credentials!" })
+            }
+            const token = createJsonToken({ id: user._id.toString() }, "13d")
+            res.status(200).json({ user, token })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }

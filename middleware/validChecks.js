@@ -51,5 +51,18 @@ exports.validateRegister = async (req, res, next) => {
 }
 
 exports.validateLogin = async (req, res, next) => {
+    const { email, password } = req.body
 
+    if (!email) {
+        return res.status(500).json({ message: "Email is required" })
+    } else if (!validateEmail(email)) {
+        return res.status(500).json({ message: "invalid email" })
+    }
+    if (!password) {
+        return res.status(500).json({ message: "Password is required" })
+    } else if (password.length < 6) {
+        return res.status(500).json({ message: "Password must be minimum 6 chars!" })
+    }
+
+    next()
 }
