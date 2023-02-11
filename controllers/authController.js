@@ -1,7 +1,74 @@
+const { createJsonToken } = require("../helpers/createToken")
+const { createUsername } = require("../helpers/createUserName")
+const { sendNotifyEmail } = require("../helpers/emailService")
+const jwt = require("jsonwebtoken")
+const User = require("../models/userModel")
 
 const authCtrl = {
-    register: async (req, res) => { },
-    login: async (req, res) => { },
+    register: async (req, res) => {
+        try {
+            const {
+                first_name,
+                last_name,
+                email,
+                password,
+                gender,
+                bYear,
+                bMonth,
+                bDay
+            } = req.body
+
+            const newUser = await User.create({
+                first_name,
+                last_name,
+                email,
+                username: await createUsername(first_name, last_name),
+                password,
+                gender,
+                bYear,
+                bMonth,
+                bDay
+            })
+            const token = createJsonToken({ id: newUser._id.toString() }, "13d")
+            const url = `${process.env.FRONT_URL}/activate/${token}`
+            await sendNotifyEmail(newUser.email, newUser.first_name, url)
+
+            res.status(200).json({ newUser, token })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    activateAccount: async (req, res) => {
+        try {
+            const { token } = req.body
+            //console.log(token)
+            const { id } = jwt.verify(token, process.env.JWT_ACCESS_KEY)
+            if (!id) {
+                return res.status(401).json({ message: "Invalid credentials!" });
+            }
+            const user = await User.findOne({ _id: id })
+            if (!user) {
+                return res.status(401).json({ message: "No user found!" });
+            }
+            if (user.verified === true) {
+                return res.status(400).json({ message: "This account already active" })
+            } else {
+                await User.findByIdAndUpdate(id, { verified: true })
+            }
+
+            res.status(201).json({ message: "Account has been activated" });
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+
+    },
+    login: async (req, res) => {
+        try {
+
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
 }
 
 module.exports = authCtrl
