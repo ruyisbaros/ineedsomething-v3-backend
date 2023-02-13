@@ -19,22 +19,22 @@ const authCtrl = {
                 bDay
             } = req.body
 
-            const newUser = await User.create({
+            const user = await User.create({
                 first_name,
                 last_name,
                 email,
                 username: await createUsername(first_name, last_name),
                 password,
                 gender,
-                bYear,
-                bMonth,
-                bDay
+                bYear: Number(bYear),
+                bMonth: Number(bMonth),
+                bDay: Number(bDay)
             })
-            const token = createJsonToken({ id: newUser._id.toString() }, "13d")
+            const token = createJsonToken({ id: user._id.toString() }, "13d")
             const url = `${process.env.FRONT_URL}/activate/${token}`
-            await sendNotifyEmail(newUser.email, newUser.first_name, url)
+            await sendNotifyEmail(user.email, user.first_name, url)
 
-            res.status(200).json({ newUser, token })
+            res.status(200).json({ user, token })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
