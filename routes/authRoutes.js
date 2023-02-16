@@ -10,5 +10,6 @@ router.post("/activate_account", protect, authCtrl.activateAccount)
 router.post("/resend_activate_email", protect, authCtrl.reSendActivationMail)
 router.post("/login", validateLogin, authCtrl.login)
 router.get("/refresh_token", authCtrl.refresh_token)
+router.get("/logout", authCtrl.logout)
 
 module.exports = router

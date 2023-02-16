@@ -120,7 +120,7 @@ const authCtrl = {
         try {
             //const access_token = generateAccessToken({ id: loggedUser._id })
             const token = req.cookies.refresh_token
-            console.log(token)
+            //console.log(token)
             if (!token) return res.status(500).json({ message: "Please login again" })
             const { id } = jwt.verify(token, process.env.JWT_REFRESH_KEY)
             if (!id) return res.status(500).json({ message: "Please login again" })
@@ -131,6 +131,14 @@ const authCtrl = {
             const access_token = createJsonToken({ id: user._id.toString() }, "13d")
 
             res.status(200).json({ token: access_token, user })
+        } catch (err) {
+            return res.status(500).json({ message: err.message })
+        }
+    },
+    logout: async (req, res) => {
+        try {
+            res.clearCookie("refresh_token", { path: "/api/v3/auth/refresh_token" })
+            return res.status(200).json({ message: "You have been logged out!" })
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }
