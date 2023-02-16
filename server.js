@@ -4,6 +4,7 @@ const express = require("express")
 const cors = require("cors")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
+const cookie_parser = require("cookie-parser")
 const app = express()
 
 //Related middleware
@@ -14,6 +15,7 @@ app.use(cors({
     optionsSuccessStatus: 200
 }))
 app.use(morgan("dev"));
+app.use(cookie_parser())
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
