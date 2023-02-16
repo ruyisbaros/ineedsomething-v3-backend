@@ -15,7 +15,7 @@ exports.protect = async (req, res, next) => {
         }
         const user = await User.findOne({ _id: id })
         if (!user) {
-            return res.status(401).json({ message: "No user found!" });
+            return res.status(403).json({ message: "No authorization!" });
         }
         req.user = user
         next()

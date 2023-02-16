@@ -6,7 +6,7 @@ const { validateRegister, validateLogin } = require("../middleware/validChecks")
 
 
 router.post("/register", validateRegister, isUserExist, authCtrl.register)
-router.post("/activate_account", authCtrl.activateAccount)
+router.post("/activate_account", protect, authCtrl.activateAccount)
 router.post("/login", validateLogin, authCtrl.login)
 
 module.exports = router

@@ -47,17 +47,21 @@ const authCtrl = {
             if (!id) {
                 return res.status(401).json({ message: "Invalid credentials!" });
             }
-            const user = await User.findOne({ _id: id })
+            let user = await User.findOne({ _id: id })
+            //Same computer can be used by more people
+            if (user.email !== req.user.email) {
+                return res.status(401).json({ message: "Opppsss! 2 users on same computer case!" });
+            }
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }
             if (user.verified === true) {
                 return res.status(400).json({ message: "This account already active" })
             } else {
-                await User.findByIdAndUpdate(id, { verified: true })
+                user = await User.findByIdAndUpdate(id, { verified: true }, { new: true })
             }
 
-            res.status(201).json({ message: "Account has been activated" });
+            res.status(201).json({ user, token });
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
