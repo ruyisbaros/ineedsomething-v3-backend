@@ -145,18 +145,27 @@ const authCtrl = {
             return res.status(500).json({ message: err.message })
         }
     },
-    sendVerificationCode: async (req, res) => {
+    sendPasswordVerificationCode: async (req, res) => {
         const { email } = req.params
         const user = await User.findOne({ email }).select("-password")
         await Code.findOneAndRemove({ user: user._id })
-        const code = createCode(5)
-        const savedCode = await Code.create({
+        const code = createCode() //creator helper function
+        await Code.create({
             code,
             user: user._id
         })
 
         await sendVerificationCodeMail(user.email, user.first_name, code)
         res.status(200).json({ message: "Verification code has been sent to your mail!" })
+    },
+    validatePasswordVerificationCode: async (req, res) => {
+        const { code, email } = req.params
+        const user = await User.findOne({ email }).select("-password")
+        const dbCode = await Code.findOne({ user: user._id })
+        if (code !== dbCode.code) {
+            return res.status(403).json({ message: "Invalid credentials" })
+        }
+        res.status(200).json({ message: "All right! Just define your new password" })
     },
     resetPassword: async (req, res) => {
 

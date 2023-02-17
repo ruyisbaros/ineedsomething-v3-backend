@@ -1,4 +1,4 @@
-exports.createCode = (size) => {
+exports.createCode = () => {
     let code = ""
     let schema = "0123456789"
     for (let index = 0; index < schema.length; index++) {
