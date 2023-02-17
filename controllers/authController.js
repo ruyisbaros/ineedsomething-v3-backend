@@ -1,9 +1,11 @@
 const { createJsonToken, createReFreshToken } = require("../helpers/createToken")
 const { createUsername } = require("../helpers/createUserName")
-const { sendNotifyEmail } = require("../helpers/emailService")
+const { sendNotifyEmail, sendVerificationCodeMail } = require("../helpers/emailService")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
+const Code = require("../models/codeModel")
+const { createCode } = require("../helpers/createVerificationCode")
 
 const authCtrl = {
     register: async (req, res) => {
@@ -143,6 +145,25 @@ const authCtrl = {
             return res.status(500).json({ message: err.message })
         }
     },
+    sendVerificationCode: async (req, res) => {
+        const { email } = req.params
+        const user = await User.findOne({ email }).select("-password")
+        await Code.findOneAndRemove({ user: user._id })
+        const code = createCode(5)
+        const savedCode = await Code.create({
+            code,
+            user: user._id
+        })
+
+        await sendVerificationCodeMail(user.email, user.first_name, code)
+        res.status(200).json({ message: "Verification code has been sent to your mail!" })
+    },
+    resetPassword: async (req, res) => {
+
+    },
+    changePassword: async (req, res) => {
+
+    }
 
 }
 
