@@ -168,10 +168,26 @@ const authCtrl = {
         res.status(200).json({ message: "All right! Just define your new password" })
     },
     resetPassword: async (req, res) => {
+        const { password, email } = req.body
+        const hashedPassword = await bcrypt.hash(password, 10)
 
+        await User.findOneAndUpdate({ email }, { password: hashedPassword })
+        res.status(200).json({ message: "All right! You can login with your new password" })
     },
     changePassword: async (req, res) => {
+        const { email, newPassword, oldPassword } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(401).json({ message: `${email} email address not connected to an account!` });
+        }
+        const passwordCheck = await bcrypt.compare(oldPassword, user.password)
+        if (!passwordCheck) {
+            return res.status(500).json({ message: "Invalid credentials!" })
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
 
+        await User.findOneAndUpdate({ email: user.email }, { password: hashedPassword })
+        res.status(200).json({ message: "All right! Your new password is active now" })
     }
 
 }

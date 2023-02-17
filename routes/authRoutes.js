@@ -13,5 +13,6 @@ router.get("/refresh_token", authCtrl.refresh_token)
 router.get("/logout", authCtrl.logout)
 router.get("/send_verify_code/:email", authCtrl.sendPasswordVerificationCode)
 router.get("/validate_verify_code/:code/:email", authCtrl.validatePasswordVerificationCode)
+router.post("/reset_password", authCtrl.resetPassword)
 
 module.exports = router
