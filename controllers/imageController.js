@@ -1,7 +1,6 @@
-const Post = require("../models/postModel")
 
-exports.postCtrl = {
-    createPost: async (req, res) => {
+exports.imageCtrl = {
+    upload: async (req, res) => {
         try {
 
         } catch (error) {

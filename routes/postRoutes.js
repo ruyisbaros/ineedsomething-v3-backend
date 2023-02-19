@@ -1,8 +1,8 @@
-const { postCtrl } = require("../controllers/postController")
-
 const router = require("express").Router()
+const { postCtrl } = require("../controllers/postController")
+const { protect } = require("../middleware/protect")
 
-router.post("/create", postCtrl.createPost)
+router.post("/create", protect, postCtrl.createPost)
 
 
 module.exports = router

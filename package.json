@@ -12,10 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cloudinary": "^1.34.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
     "google-auth-library": "^8.7.0",
     "googleapis": "^111.0.0",
     "jsonwebtoken": "^9.0.0",
