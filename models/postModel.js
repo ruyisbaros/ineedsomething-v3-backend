@@ -18,6 +18,8 @@ const postSchema = new mongoose.Schema({
     background: {
         type: String
     },
+    privacy: { type: String, default: "public" },
+    text: { type: String, default: "" },
     comments: [
         {
             comment: String,

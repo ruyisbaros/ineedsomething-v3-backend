@@ -6,7 +6,11 @@ const morgan = require("morgan")
 const mongoose = require("mongoose")
 const fileUpload = require("express-fileupload")
 const cookie_parser = require("cookie-parser")
+const bodyParser = require("body-parser");
+
 const app = express()
+
+
 
 //Related middleware
 app.use(cors({
@@ -17,15 +21,19 @@ app.use(cors({
 }))
 app.use(morgan("dev"));
 app.use(cookie_parser())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload({
     useTempFiles: true
 }))
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 
 //DB connection
 mongoose.connect(process.env.DB_URL, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
 })
     .then(() => {
         console.log("DB connection done")
@@ -33,6 +41,7 @@ mongoose.connect(process.env.DB_URL, {
     .catch(e => {
         console.log(e)
 })
+mongoose.set('strictQuery', false);
 //Routes
 app.use("/api/v3/auth", routes.authRoutes)
 app.use("/api/v3/posts", routes.postRoutes)
