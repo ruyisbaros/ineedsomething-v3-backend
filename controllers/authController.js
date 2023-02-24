@@ -43,7 +43,7 @@ const authCtrl = {
                 maxAge: 15 * 24 * 60 * 60 * 1000 //15 days
             })
 
-            res.status(200).json({ user, token })
+            res.status(200).json({ ...user.toObject(), token })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -70,7 +70,7 @@ const authCtrl = {
                 user = await User.findByIdAndUpdate(id, { verified: true }, { new: true })
             }
 
-            res.status(201).json({ user, token });
+            res.status(201).json({ ...user.toObject(), token });
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -113,7 +113,7 @@ const authCtrl = {
                 path: "/api/v3/auth/refresh_token",
                 maxAge: 15 * 24 * 60 * 60 * 1000 //15 days
             })
-            res.status(200).json({ user, token })
+            res.status(200).json({ ...user.toObject(), token })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -132,7 +132,7 @@ const authCtrl = {
             //console.log(user)
             const access_token = createJsonToken({ id: user._id.toString() }, "13d")
 
-            res.status(200).json({ token: access_token, user })
+            res.status(200).json({ ...user.toObject(), token: access_token })
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }

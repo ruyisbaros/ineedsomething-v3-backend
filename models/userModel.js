@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema({
     cover: {
         type: String,
         trim: true,
+        default: ""
     },
     gender: {
         type: String,

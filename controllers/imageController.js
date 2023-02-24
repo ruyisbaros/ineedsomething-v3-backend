@@ -4,6 +4,7 @@ const cloudinary = require("cloudinary")
 const { uploadImage, uploads } = require("../helpers/imageService")
 const Post = require("../models/postModel")
 const User = require("../models/userModel")
+const { exec } = require("child_process")
 
 cloudinary.v2.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -19,6 +20,24 @@ exports.imageCtrl = {
             const { file } = req.files
             const url = await uploadToCloudinary(file, path)
             res.json(url);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+    listImages: async (req, res) => {
+        try {
+            const { path, sort, max } = req.body
+            cloudinary.v2.search
+                .expression(`${path}`)
+                .sort_by("created_at", `${sort}`)
+                .max_results(max)
+                .execute()
+                .then((result) => {
+                    res.status(201).json(result)
+                })
+                .catch(e => {
+                    res.status(500).json({ message: e.message });
+                })
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
