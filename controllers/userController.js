@@ -42,6 +42,17 @@ const userCtrl = {
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
+    },
+    updateCoverPicture: async (req, res) => {
+        try {
+            const { url } = req.body
+            console.log(url)
+            await User.findByIdAndUpdate(req.user._id, { cover: url }, { new: true }).select("-password")
+
+            res.status(200).json({ url, message: "Cover picture updated successfully" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
     }
 }
 
