@@ -46,10 +46,24 @@ const userCtrl = {
     updateCoverPicture: async (req, res) => {
         try {
             const { url } = req.body
-            console.log(url)
+            //console.log(url)
             await User.findByIdAndUpdate(req.user._id, { cover: url }, { new: true }).select("-password")
 
             res.status(200).json({ url, message: "Cover picture updated successfully" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    updateUserDetails: async (req, res) => {
+        try {
+            const { infos } = req.body
+            //console.log(url)
+            const user = await User.findByIdAndUpdate(req.user._id,
+                { details: infos },
+                { new: true })
+                .select("-password")
+
+            res.status(200).json({ details: user.details, message: "User detail updated successfully" })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
