@@ -1,11 +1,12 @@
 require("dotenv").config()
 const routes = require('./routes/index');
 const express = require("express")
+const cookieSession = require("cookie-session")
 const cors = require("cors")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
 const fileUpload = require("express-fileupload")
-const cookie_parser = require("cookie-parser")
+
 const bodyParser = require("body-parser");
 
 const app = express()
@@ -20,7 +21,16 @@ app.use(cors({
     optionsSuccessStatus: 200
 }))
 app.use(morgan("dev"));
-app.use(cookie_parser())
+app.set("trust proxy", 1)
+app.use(
+    cookieSession({
+        name: "session",
+        keys: [process.env.KEY_ONE, process.env.KEY_TWO],
+        maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
+        secure: process.env.NODE_ENV === "production",
+        //sameSite: "none"  //use for production
+    })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload({

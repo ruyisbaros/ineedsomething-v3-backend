@@ -3,8 +3,7 @@ const User = require("../models/userModel")
 
 exports.protect = async (req, res, next) => {
     try {
-        const header = req.header("Authorization")
-        const token = header.split(" ")[1]
+        const token = req.session?.jwt
         //console.log(header, token)
         //console.log(token)
         if (!token) {

@@ -37,11 +37,10 @@ const authCtrl = {
             const url = `${process.env.FRONT_URL}/activate/${token}`
             await sendNotifyEmail(user.email, user.first_name, url)
 
-            res.cookie("refresh_token", refreshToken, {
-                httpOnly: true,
-                path: "/api/v3/auth/refresh_token",
-                maxAge: 15 * 24 * 60 * 60 * 1000 //15 days
-            })
+            req.session = {
+                jwtR: refreshToken,
+                jwt: token
+            };
 
             res.status(200).json({ ...user.toObject(), token })
         } catch (error) {
@@ -108,11 +107,12 @@ const authCtrl = {
             }
             const token = createJsonToken({ id: user._id.toString() }, "13d")
             const refreshToken = createReFreshToken({ id: user._id.toString() }, "15d")
-            res.cookie("refresh_token", refreshToken, {
-                httpOnly: true,
-                path: "/api/v3/auth/refresh_token",
-                maxAge: 15 * 24 * 60 * 60 * 1000 //15 days
-            })
+
+            req.session = {
+                jwtR: refreshToken,
+                jwt: token
+            };
+            console.log(req.session)
             res.status(200).json({ ...user.toObject(), token })
         } catch (error) {
             res.status(500).json({ message: error.message })
@@ -121,8 +121,8 @@ const authCtrl = {
     refresh_token: async (req, res) => {
         try {
             //const access_token = generateAccessToken({ id: loggedUser._id })
-            const token = req.cookies.refresh_token
-            //console.log(token)
+            const token = req.session?.jwtR
+            //console.log(req.session, token)
             if (!token) return res.status(500).json({ message: "Please login again" })
             const { id } = jwt.verify(token, process.env.JWT_REFRESH_KEY)
             if (!id) return res.status(500).json({ message: "Please login again" })
@@ -131,6 +131,10 @@ const authCtrl = {
             if (!user) return res.status(500).json({ message: "This account does not exist!" })
             //console.log(user)
             const access_token = createJsonToken({ id: user._id.toString() }, "13d")
+            req.session = {
+                jwtR: token,
+                jwt: access_token
+            };
 
             res.status(200).json({ ...user.toObject(), token: access_token })
         } catch (err) {
