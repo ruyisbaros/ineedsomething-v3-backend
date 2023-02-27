@@ -42,7 +42,7 @@ const authCtrl = {
                 jwt: token
             };
 
-            res.status(200).json({ ...user.toObject(), token })
+            res.status(200).json(user)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -69,7 +69,7 @@ const authCtrl = {
                 user = await User.findByIdAndUpdate(id, { verified: true }, { new: true })
             }
 
-            res.status(201).json({ ...user.toObject(), token });
+            res.status(201).json(user);
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -113,7 +113,7 @@ const authCtrl = {
                 jwt: token
             };
             console.log(req.session)
-            res.status(200).json({ ...user.toObject(), token })
+            res.status(200).json(user)
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -136,14 +136,14 @@ const authCtrl = {
                 jwt: access_token
             };
 
-            res.status(200).json({ ...user.toObject(), token: access_token })
+            res.status(200).json(user)
         } catch (err) {
             return res.status(500).json({ message: err.message })
         }
     },
     logout: async (req, res) => {
         try {
-            res.clearCookie("refresh_token", { path: "/api/v3/auth/refresh_token" })
+            req.session = null;
             return res.status(200).json({ message: "You have been logged out!" })
         } catch (err) {
             return res.status(500).json({ message: err.message })
