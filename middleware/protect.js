@@ -18,6 +18,7 @@ exports.protect = async (req, res, next) => {
             return res.status(403).json({ message: "No authorization!" });
         }
         req.user = user
+        //console.log(req.user)
         next()
     } catch (error) {
         return res.status(500).json({ message: error.message })

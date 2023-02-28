@@ -15,12 +15,14 @@ cloudinary.v2.config({
 
 exports.imageCtrl = {
     upload: async (req, res) => {
+        //console.log(req.files)
         try {
             const { path } = req.body;
             const { file } = req.files
             const url = await uploadToCloudinary(file, path)
-            res.json(url);
+           // res.json(url);
         } catch (error) {
+            console.log(error.message)
             res.status(500).json({ message: error.message });
         }
     },
