@@ -23,13 +23,15 @@ app.use(cors({
 app.use(morgan("dev"));
 app.set("trust proxy", 1)
 app.use(
-    cookieSession({
-        name: "session",
-        keys: [process.env.KEY_ONE, process.env.KEY_TWO],
-        maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-        //secure: process.env.NODE_ENV === "production",
-        sameSite: "none"  //use for production
-    })
+    cookieSession(
+        {
+            name: "session",
+            keys: [process.env.KEY_ONE, process.env.KEY_TWO],
+            maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
+            secure: true,
+            sameSite: "none",//use for production
+
+        })
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,7 +52,7 @@ mongoose.connect(process.env.DB_URL, {
     })
     .catch(e => {
         console.log(e)
-})
+    })
 mongoose.set('strictQuery', false);
 //Routes
 app.use("", routes.healthRoutes)
