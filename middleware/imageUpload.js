@@ -10,6 +10,7 @@ exports.validateImage = async (req, res, next) => {
             file.mimetype !== "image/jpeg" &&
             file.mimetype !== "image/png" &&
             file.mimetype !== "image/gif" &&
+            file.mimetype !== "html/text" &&
             file.mimetype !== "image/webp") {
             //console.log(file)
             removeTmp(file.tempFilePath)

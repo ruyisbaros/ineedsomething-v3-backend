@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary")
-
+const fs = require("fs")
 
 cloudinary.v2.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -7,20 +7,28 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUD_SECRET
 })
 
-exports.uploads = async (file, path) => {
+exports.uploadToCloudinary = async (file, path) => {
     return new Promise((resolve) => {
-        cloudinary.v2.uploader.upload(file, (result) => {
-            resolve({
-                url: result.url,
-                id: result.public_id
-            })
-        }, {
-            resource_type: "auto",
-            folder: path
-        })
-    });
-}
-exports.removeImage = async () => { }
+        cloudinary.v2.uploader.upload(
+            file.tempFilePath,
+            {
+                folder: path,
+            },
+            (err, res) => {
+                if (err) {
+                    removeTmp(file.tempFilePath);
+                    throw err
+                } else {
+                    removeTmp(file.tempFilePath)
+                    resolve({
+                        url: res.secure_url,
+                    });
+                }
+
+            }
+        );
+    })
+};
 
 function removeTmp(url) {
     fs.unlink(url, (err) => {

@@ -14,17 +14,21 @@ const authCtrl = {
                 first_name,
                 last_name,
                 email,
+                picture,
+                avatarColor,
                 password,
                 gender,
                 bYear,
                 bMonth,
                 bDay
             } = req.body
-
+            console.log(req.body)
             const user = await User.create({
                 first_name,
                 last_name,
                 email,
+                picture,
+                avatarColor,
                 username: await createUsername(first_name, last_name),
                 password,
                 gender,
@@ -131,6 +135,7 @@ const authCtrl = {
             if (!user) return res.status(500).json({ message: "This account does not exist!" })
             //console.log(user)
             const access_token = createJsonToken({ id: user._id.toString() }, "13d")
+            //console.log(req.session)
             req.session = {
                 jwtR: token,
                 jwt: access_token
