@@ -53,6 +53,7 @@ mongoose.connect(process.env.DB_URL, {
 })
 mongoose.set('strictQuery', false);
 //Routes
+app.use("", routes.healthRoutes)
 app.use("/api/v3/auth", routes.authRoutes)
 app.use("/api/v3/posts", routes.postRoutes)
 app.use("/api/v3/users", routes.userRoutes)
