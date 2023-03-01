@@ -14,7 +14,7 @@ const app = express()
 
 //Related middleware
 
-app.options("*", cors({
+app.use(cors({
     origin: `${process.env.FRONT_URL}`,
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
