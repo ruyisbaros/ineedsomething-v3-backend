@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
 const Code = require("../models/codeModel")
+const base64 = require('base64url');
 const { createCode } = require("../helpers/createVerificationCode")
 
 const authCtrl = {
@@ -109,9 +110,11 @@ const authCtrl = {
             if (!passwordCheck) {
                 return res.status(500).json({ message: "Invalid credentials!" })
             }
-            const token = createJsonToken({ id: user._id.toString() }, "13d")
-            const refreshToken = createReFreshToken({ id: user._id.toString() }, "15d")
-
+            const token = jwt.sign({ id: user?._id }, process.env.JWT_ACCESS_KEY, { expiresIn: "13d" })
+            const refreshToken = jwt.sign({ id: user?._id }, process.env.JWT_REFRESH_KEY, { expiresIn: "13d" })
+            /* const token = createJsonToken({ id: user._id }, "13d") */
+            /* const refreshToken = createReFreshToken({ id: user._id }, "15d") */
+            //console.log("token", token, jwt.verify(token, `${process.env.JWT_ACCESS_KEY}`))
             req.session = {
                 jwtR: refreshToken,
                 jwt: token
@@ -128,7 +131,7 @@ const authCtrl = {
             const token = req.session?.jwtR
             //console.log(req.session, token)
             if (!token) return res.status(500).json({ message: "Please login again" })
-            const { id } = jwt.verify(token, process.env.JWT_REFRESH_KEY)
+            const { id } = jwt.verify(token, `${process.env.JWT_REFRESH_KEY}`)
             if (!id) return res.status(500).json({ message: "Please login again" })
 
             const user = await User.findOne({ _id: id }).select("-password")

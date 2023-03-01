@@ -8,10 +8,12 @@ exports.protect = async (req, res, next) => {
         //console.log(header, token)
         //console.log(token)
         const token = req.session.jwtR
+        console.log(req.session)
         if (!token) {
             return res.status(400).json({ message: "You should sign in!" })
         }
-        const { id } = jwt.verify(token, process.env.JWT_ACCESS_KEY)
+        //base64.decode(token).split()
+        const { id } = jwt.verify(token, `${process.env.JWT_ACCESS_KEY}`)
         if (!id) {
             return res.status(401).json({ message: "Invalid credentials!" });
         }

@@ -21,7 +21,7 @@ app.use(
             //domain: "https://ineedsomething.org",
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "none",//use for production
         })
 );
@@ -30,7 +30,7 @@ app.use(
     cors({
         origin: process.env.FRONT_URL,
         credentials: true,
-        allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
+        allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override"],
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
