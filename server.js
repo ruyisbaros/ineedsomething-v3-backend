@@ -12,17 +12,17 @@ const bodyParser = require("body-parser");
 
 const app = express()
 
-
-
 //Related middleware
-/* app.use(cors({
+
+app.options("*", cors({
     origin: `${process.env.FRONT_URL}`,
-    allowedHeaders: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+    preflightContinue: false,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200,
-})) */
-app.use(cors())
+}))
+
 app.use(morgan("dev"));
 app.set("trust proxy", 1)
 app.use(
