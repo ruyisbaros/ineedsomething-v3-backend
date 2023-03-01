@@ -1,3 +1,4 @@
+/* something-deploy.s3-website.eu-central-1.amazonaws.com */
 require("dotenv").config()
 const routes = require('./routes/index');
 const express = require("express")
@@ -14,12 +15,14 @@ const app = express()
 
 
 //Related middleware
-app.use(cors({
+/* app.use(cors({
     origin: `${process.env.FRONT_URL}`,
+    allowedHeaders: true,
     credentials: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    optionsSuccessStatus: 200
-}))
+    optionsSuccessStatus: 200,
+})) */
+app.use(cors())
 app.use(morgan("dev"));
 app.set("trust proxy", 1)
 app.use(
