@@ -3,7 +3,8 @@ const User = require("../models/userModel")
 
 exports.protect = async (req, res, next) => {
     try {
-        const token = req.session?.jwt
+        const header = req.header("Authorization")
+        const token = header.split(" ")[1]
         //console.log(header, token)
         //console.log(token)
         if (!token) {
@@ -18,7 +19,6 @@ exports.protect = async (req, res, next) => {
             return res.status(403).json({ message: "No authorization!" });
         }
         req.user = user
-        //console.log(req.user)
         next()
     } catch (error) {
         return res.status(500).json({ message: error.message })

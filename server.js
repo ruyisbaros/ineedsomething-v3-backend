@@ -14,15 +14,15 @@ const app = express()
 
 //Related middleware
 
+app.options("*", cors());
 app.use(cors({
     origin: `${process.env.FRONT_URL}`,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
     credentials: true,
-    preflightContinue: false,
+    preflightContinue: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200,
 }))
-
 app.use(morgan("dev"));
 app.set("trust proxy", 1)
 app.use(
