@@ -30,6 +30,7 @@ app.use(
     cors({
         origin: process.env.FRONT_URL,
         credentials: true,
+        allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
