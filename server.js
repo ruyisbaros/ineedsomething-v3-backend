@@ -4,6 +4,7 @@ const routes = require('./routes/index');
 const express = require("express")
 const cookieSession = require("cookie-session")
 const cors = require("cors")
+const helmet = require("helmet")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
 const fileUpload = require("express-fileupload")
@@ -13,18 +14,6 @@ const bodyParser = require("body-parser");
 const app = express()
 
 //Related middleware
-
-app.options("*", cors());
-app.use(cors({
-    origin: `${process.env.FRONT_URL}`,
-    allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
-    credentials: true,
-    preflightContinue: true,
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    optionsSuccessStatus: 200,
-}))
-app.use(morgan("dev"));
-app.set("trust proxy", 1)
 app.use(
     cookieSession(
         {
@@ -36,6 +25,26 @@ app.use(
             sameSite: "none",//use for production
         })
 );
+app.use(helmet())
+app.use(
+    cors({
+        origin: process.env.FRONT_URL,
+        credentials: true,
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+        optionsSuccessStatus: 200,
+    })
+);
+/* app.use(cors({
+    origin: `${process.env.FRONT_URL}`,
+    allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
+    credentials: true,
+    preflightContinue: true,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    optionsSuccessStatus: 200,
+})) */
+app.use(morgan("dev"));
+app.set("trust proxy", 1)
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload({
