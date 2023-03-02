@@ -25,15 +25,19 @@ app.use(
             //sameSite: "none",//use for production
         })
 );
-app.use(helmet())
-/* app.use((req,res,next)=>{
-    res.header(`Access-Control-Allow-Origin: ${process.env.FRONT_URL}`)
-    res.header(`Access-Control-Allow-Methods: POST,GET,DELETE,OPTIONS,PUT,PATCH,HEAD`)
-    res.header(`Access-Control-Allow-Headers: Content-Type, Origin, X-Requested-Width, Accept, Authorization, X-HTTP_Method-Override, Access-Control-Allow-Origin`)
-}) */
-app.options("/", cors(({
+
+app.use(function (req, res, next) {
+    res.header(`Access-Control-Allow-Origin', "${process.env.FRONT_URL}"`);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,HEAD,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, accept, access-control-allow-origin;X-HTTP_Method-Override;origin');
+    res.header('Access-Control-Allow-Credentials', "true")
+
+    if ('OPTIONS' == req.method) res.send(200);
+    else next();
+});
+/* app.options("/", cors({
     origin: process.env.FRONT_URL,
-})))
+}))
 app.use(
     cors({
         origin: process.env.FRONT_URL,
@@ -43,15 +47,9 @@ app.use(
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
-);
-/* app.use(cors({
-    origin: `${process.env.FRONT_URL}`,
-    allowedHeaders: ['content-type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "access-control-allow-origin"],
-    credentials: true,
-    preflightContinue: true,
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    optionsSuccessStatus: 200,
-})) */
+); */
+app.use(helmet())
+
 app.use(morgan("dev"));
 app.set("trust proxy", 1)
 
