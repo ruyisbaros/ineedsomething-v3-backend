@@ -31,20 +31,13 @@ app.use(helmet())
     res.header(`Access-Control-Allow-Methods: POST,GET,DELETE,OPTIONS,PUT,PATCH,HEAD`)
     res.header(`Access-Control-Allow-Headers: Content-Type, Origin, X-Requested-Width, Accept, Authorization, X-HTTP_Method-Override, Access-Control-Allow-Origin`)
 }) */
-app.options("/api/v3/*", cors({
-    origin: process.env.FRONT_URL,
-    credentials: true,
-    allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin"],
-    exposedHeaders: [],
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    optionsSuccessStatus: 200,
-}))
+app.options("/", cors())
 app.use(
     cors({
         origin: process.env.FRONT_URL,
         credentials: true,
-        allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin"],
-        exposedHeaders: [],
+        allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin", "X-PINGOTHER"],
+        preflightContinue: false,
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
