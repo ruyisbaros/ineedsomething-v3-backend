@@ -32,8 +32,10 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, accept, access-control-allow-origin;X-HTTP_Method-Override;origin');
     res.header('Access-Control-Allow-Credentials', "true")
 
-    if ('OPTIONS' == req.method) res.send(200);
-    else next();
+    if (req.method === 'OPTIONS') {
+        next()
+    }
+    next();
 });
 /* app.options("/", cors({
     origin: process.env.FRONT_URL,
