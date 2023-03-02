@@ -26,16 +26,18 @@ app.use(
         })
 );
 
-app.use(function (req, res, next) {
-    res.header(`Access-Control-Allow-Origin', "${process.env.FRONT_URL}"`);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,HEAD,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, accept, access-control-allow-origin;X-HTTP_Method-Override;origin');
-    res.header('Access-Control-Allow-Credentials', "true")
-
+app.all('/*', function (req, res, next) {
+    // CORS headers
+    res.header("Access-Control-Allow-Origin", "https://ineedsomething.org"); // restrict it to the required domain
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT,HEAD, DELETE, OPTIONS');
+    // Set custom headers for CORS
+    res.header('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, save-path, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Access-Token, X-Key');
     if (req.method === 'OPTIONS') {
-        next()
+        res.status(200).end();
+    } else {
+        next();
     }
-    next();
 });
 /* app.options("/", cors({
     origin: process.env.FRONT_URL,
