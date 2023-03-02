@@ -8,7 +8,7 @@ exports.imageCtrl = {
         try {
             const { path } = req.body;
             const { file } = req.files
-            console.log(file, path)
+            //console.log(file, path)
             const url = await uploadToCloudinary(file, path)
             //console.log(url)
             res.json(url);

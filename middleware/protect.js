@@ -8,7 +8,7 @@ exports.protect = async (req, res, next) => {
         //console.log(header, token)
         //console.log(token)
         const token = req.session.jwtR
-        console.log(req.session)
+        //console.log(req.session)
         if (!token) {
             return res.status(400).json({ message: "You should sign in!" })
         }

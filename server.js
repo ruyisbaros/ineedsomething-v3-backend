@@ -22,7 +22,7 @@ app.use(
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",//use for production
+            //sameSite: "none",//use for production
         })
 );
 app.use(helmet())
@@ -31,7 +31,9 @@ app.use(helmet())
     res.header(`Access-Control-Allow-Methods: POST,GET,DELETE,OPTIONS,PUT,PATCH,HEAD`)
     res.header(`Access-Control-Allow-Headers: Content-Type, Origin, X-Requested-Width, Accept, Authorization, X-HTTP_Method-Override, Access-Control-Allow-Origin`)
 }) */
-app.options("/", cors())
+app.options("/", cors(({
+    origin: process.env.FRONT_URL,
+})))
 app.use(
     cors({
         origin: process.env.FRONT_URL,
