@@ -26,11 +26,20 @@ app.use(
         })
 );
 app.use(helmet())
+/* app.use((req,res,next)=>{
+    res.header(`Access-Control-Allow-Origin: ${process.env.FRONT_URL}`)
+    res.header(`Access-Control-Allow-Methods: POST,GET,DELETE,OPTIONS,PUT,PATCH,HEAD`)
+    res.header(`Access-Control-Allow-Headers: Content-Type, Origin, X-Requested-Width, Accept, Authorization, X-HTTP_Method-Override, Access-Control-Allow-Origin`)
+}) */
+app.options("/api/v3/*", cors({
+    origin: process.env.FRONT_URL,
+}))
 app.use(
     cors({
         origin: process.env.FRONT_URL,
         credentials: true,
         allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin"],
+        exposedHeaders: [],
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
