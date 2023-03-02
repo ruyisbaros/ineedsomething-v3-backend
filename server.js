@@ -33,6 +33,11 @@ app.use(helmet())
 }) */
 app.options("/api/v3/*", cors({
     origin: process.env.FRONT_URL,
+    credentials: true,
+    allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin"],
+    exposedHeaders: [],
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    optionsSuccessStatus: 200,
 }))
 app.use(
     cors({
