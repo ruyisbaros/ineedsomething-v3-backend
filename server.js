@@ -26,7 +26,7 @@ app.use(
         })
 );
 
-/* app.all('/*', function (req, res, next) {
+app.use(function (req, res, next) {
     // CORS headers
     res.header("Access-Control-Allow-Origin", "https://ineedsomething.org"); // restrict it to the required domain
     res.header("Access-Control-Allow-Credentials", "true");
@@ -38,10 +38,10 @@ app.use(
     } else {
         next();
     }
-}); */
-app.options("/", (req, res) => {
-    res.status(200).end();
-})
+});
+/* app.options("/", cors({
+    origin: process.env.FRONT_URL,
+}))
 app.use(
     cors({
         origin: process.env.FRONT_URL,
@@ -51,7 +51,7 @@ app.use(
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
-);
+); */
 app.use(helmet())
 
 app.use(morgan("dev"));
