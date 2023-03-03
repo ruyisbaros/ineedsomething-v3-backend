@@ -1,5 +1,7 @@
 const User = require("../models/userModel")
 const Post = require("../models/postModel")
+const Image = require("../models/userImagesModel")
+const { uploadToCloudinary } = require("../helpers/imageService")
 
 const userCtrl = {
     findUserByEmail: async (req, res) => {
@@ -34,22 +36,25 @@ const userCtrl = {
     },
     updateProfilePicture: async (req, res) => {
         try {
-            const { url } = req.body
-            console.log(url)
-            await User.findByIdAndUpdate(req.user._id, { picture: url }, { new: true }).select("-password")
+            const { pic, path } = req.body
+            const img = await uploadToCloudinary(pic, path)
+            const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "profile" })
+            await User.findByIdAndUpdate(req.user._id, { picture: img.url }, { new: true }).select("-password")
 
-            res.status(200).json({ url, message: "Profile picture updated successfully" })
+            res.status(200).json({ url: img.url, message: "Profile picture updated successfully" })
         } catch (error) {
+            console.log(error.message)
             res.status(500).json({ message: error.message })
         }
     },
     updateCoverPicture: async (req, res) => {
         try {
-            const { url } = req.body
-            //console.log(url)
-            await User.findByIdAndUpdate(req.user._id, { cover: url }, { new: true }).select("-password")
+            const { pic, path } = req.body
+            const img = await uploadToCloudinary(pic, path)
+            const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "cover" })
+            await User.findByIdAndUpdate(req.user._id, { cover: img.url }, { new: true }).select("-password")
 
-            res.status(200).json({ url, message: "Cover picture updated successfully" })
+            res.status(200).json({ url: img.url, message: "Cover picture updated successfully" })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const { ObjectId } = mongoose.Schema
 
-const postImagesSchema = new mongoose.Schema({
+const commentImages = new mongoose.Schema({
     url: {
         type: String,
         required: true
@@ -14,9 +14,13 @@ const postImagesSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Post",
     },
+    comment: {
+        type: ObjectId,
+        ref: "Comment",
+    },
 
 })
 
-const postImages = mongoose.model("PostImages", postImagesSchema)
+const commentImage = mongoose.model("CommentImage", commentImages)
 
-module.exports = postImages
+module.exports = commentImage

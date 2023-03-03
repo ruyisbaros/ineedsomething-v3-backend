@@ -16,7 +16,7 @@ exports.uploadToCloudinary = (file, path) => {
             },
             (err, res) => {
                 if (err) {
-
+                    console.log(err)
                     throw err
                 } else {
 

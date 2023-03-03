@@ -20,25 +20,7 @@ const postSchema = new mongoose.Schema({
     },
     privacy: { type: String, default: "public" },
     text: { type: String, default: "" },
-    comments: [
-        {
-            comment: String,
-            image: String,
-            commentBy: {
-                type: ObjectId,
-                ref: "User",
-                required: true
-            },
-            reply: {
-                type: ObjectId,
-                ref: "User",
-            },
-            commentAt: {
-                type: Date,
-                default: new Date()
-            }
-        }
-    ]
+
 }, { timestamps: true })
 
 
