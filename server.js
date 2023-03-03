@@ -14,6 +14,7 @@ const bodyParser = require("body-parser");
 const app = express()
 
 //Related middleware
+app.set("trust proxy", 1)
 app.use(
     cookieSession(
         {
@@ -22,7 +23,7 @@ app.use(
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",//use for production
+            //sameSite: "none",//use for production
         })
 )
 
@@ -37,18 +38,17 @@ app.use(
         preflightContinue: false,
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
+        maxAge: 600
     })
 );
 app.use(helmet())
 
 app.use(morgan("dev"));
-app.set("trust proxy", 1)
-
-app.use(bodyParser.json());
+/* app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload({
     useTempFiles: true
-}))
+})) */
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static(__dirname + "/public"));

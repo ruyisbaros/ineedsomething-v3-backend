@@ -5,8 +5,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
 const Code = require("../models/codeModel")
-const base64 = require('base64url');
+const Image = require("../models/userImagesModel")
 const { createCode } = require("../helpers/createVerificationCode")
+const { uploadToCloudinary } = require("../helpers/imageService")
 
 const authCtrl = {
     register: async (req, res) => {
@@ -16,6 +17,7 @@ const authCtrl = {
                 last_name,
                 email,
                 picture,
+                path,
                 avatarColor,
                 password,
                 gender,
@@ -23,12 +25,16 @@ const authCtrl = {
                 bMonth,
                 bDay
             } = req.body
-            console.log(req.body)
+            //console.log(req.body)
+            console.log(typeof picture)
+            const img = await uploadToCloudinary(picture, path)
+            console.log(img.public_id.split("profileImages/")[1])
+            const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "profile" })
             const user = await User.create({
                 first_name,
                 last_name,
                 email,
-                picture,
+                picture: img.url,
                 avatarColor,
                 username: await createUsername(first_name, last_name),
                 password,
@@ -37,6 +43,7 @@ const authCtrl = {
                 bMonth: Number(bMonth),
                 bDay: Number(bDay)
             })
+            await Image.findByIdAndUpdate(createdImg._id, { owner: user._id })
             const token = createJsonToken({ id: user._id.toString() }, "13d")
             const refreshToken = createReFreshToken({ id: user._id.toString() }, "15d")
             const url = `${process.env.FRONT_URL}/activate/${token}`
@@ -56,7 +63,7 @@ const authCtrl = {
         try {
             const { token } = req.body
             //console.log(token)
-            const { id } = jwt.verify(token, process.env.JWT_ACCESS_KEY)
+            const { id } = jwt.verify(token, `${process.env.JWT_ACCESS_KEY}`)
             if (!id) {
                 return res.status(401).json({ message: "Invalid credentials!" });
             }
