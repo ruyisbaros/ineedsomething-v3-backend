@@ -22,36 +22,23 @@ app.use(
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
             secure: process.env.NODE_ENV === "production",
-            //sameSite: "none",//use for production
+            sameSite: "none",//use for production
         })
-);
+)
 
-app.use(function (req, res, next) {
-    // CORS headers
-    res.header("Access-Control-Allow-Origin", "https://ineedsomething.org"); // restrict it to the required domain
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT,HEAD, DELETE, OPTIONS');
-    // Set custom headers for CORS
-    res.header('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, save-path, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, X-Access-Token, X-Key');
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-    } else {
-        next();
-    }
-});
-/* app.options("/", cors({
-    origin: process.env.FRONT_URL,
+app.options("/", cors({
+    origin: `${process.env.FRONT_URL}`,
 }))
 app.use(
     cors({
-        origin: process.env.FRONT_URL,
+        origin: `${process.env.FRONT_URL}`,
         credentials: true,
         allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin", "X-PINGOTHER"],
         preflightContinue: false,
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         optionsSuccessStatus: 200,
     })
-); */
+);
 app.use(helmet())
 
 app.use(morgan("dev"));
