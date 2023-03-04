@@ -14,6 +14,14 @@ const postImagesSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Post",
     },
+    owner: {
+        type: ObjectId,
+        ref: "User",
+    },
+    type: {
+        type: String,
+        default: "post",
+    }
 
 })
 

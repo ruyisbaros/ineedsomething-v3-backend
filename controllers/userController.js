@@ -22,7 +22,7 @@ const userCtrl = {
     getProfile: async (req, res) => {
         try {
             const { username } = req.params
-            const user = await User.findOne({ username }).select("-password")
+            const user = await User.findOne({ username }).populate("details").select("-password")
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }
@@ -38,7 +38,7 @@ const userCtrl = {
         try {
             const { pic, path } = req.body
             const img = await uploadToCloudinary(pic, path)
-            const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "profile" })
+            const createdImg = await Image.create({ owner: req.user._id, url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "profile" })
             await User.findByIdAndUpdate(req.user._id, { picture: img.url }, { new: true }).select("-password")
 
             res.status(200).json({ url: img.url, message: "Profile picture updated successfully" })
@@ -51,7 +51,7 @@ const userCtrl = {
         try {
             const { pic, path } = req.body
             const img = await uploadToCloudinary(pic, path)
-            const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "cover" })
+            const createdImg = await Image.create({ owner: req.user._id, url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "cover" })
             await User.findByIdAndUpdate(req.user._id, { cover: img.url }, { new: true }).select("-password")
 
             res.status(200).json({ url: img.url, message: "Cover picture updated successfully" })
