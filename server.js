@@ -23,7 +23,7 @@ app.use(
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none",//use for production
+            //sameSite: "none",//use for production
         })
 )
 
