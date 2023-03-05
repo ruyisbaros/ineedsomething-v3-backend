@@ -25,7 +25,7 @@ const userCtrl = {
             const { username } = req.params
            // const me = await User.findOne({ id: req.user._id })
 
-            const user = await User.findOne({ username }).populate("details").select("-password")
+            const user = await User.findOne({ username }).populate("friends", "first_name last_name username picture").select("-password")
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { ObjectId } = mongoose.Types
+const { ObjectId } = mongoose.Schema
 
 const postImagesSchema = new mongoose.Schema({
     url: {
