@@ -128,7 +128,8 @@ const userCtrl = {
     },
     cancelFriendRequest: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             if (req.user._id !== id) {
                 const sender = await User.findById(req.user._id)
                 const receiver = await User.findById(id)
@@ -153,7 +154,8 @@ const userCtrl = {
     },
     acceptFriendRequest: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             if (req.user._id !== id) {
                 const receiver = await User.findById(req.user._id)
                 const sender = await User.findById(id)
@@ -180,7 +182,8 @@ const userCtrl = {
     },
     followUnFollow: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             const sender = await User.findById(req.user._id)
             const receiver = await User.findById(id)
             if (req.user._id !== id) {
@@ -213,7 +216,8 @@ const userCtrl = {
     },
     unFriend: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             if (req.user._id !== id) {
                 const sender = await User.findById(req.user._id)
                 const receiver = await User.findById(id)
@@ -249,9 +253,10 @@ const userCtrl = {
             res.status(500).json({ message: error.message })
         }
     },
-    deleteFriendRequest: async (req, res) => {
+    ignoreFriendRequest: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             if (req.user._id !== id) {
                 const receiver = await User.findById(req.user._id)
                 const sender = await User.findById(id)

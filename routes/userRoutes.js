@@ -13,6 +13,6 @@ router.patch("/cancel_friend_request/:id", protect, userCtrl.cancelFriendRequest
 router.patch("/accept_friend_request/:id", protect, userCtrl.acceptFriendRequest)
 router.patch("/follow_un_follow/:id", protect, userCtrl.followUnFollow)
 router.patch("/un_friend/:id", protect, userCtrl.unFriend)
-router.patch("/delete_friend_request/:id", protect, userCtrl.deleteFriendRequest)
+router.patch("/delete_friend_request/:id", protect, userCtrl.ignoreFriendRequest)
 
 module.exports = router
