@@ -23,29 +23,32 @@ const userCtrl = {
         try {
             const { username } = req.params
             const me = await User.findOne({ id: req.user._id })
-            const friendship = {
-                friend: false,
-                following: false,
-                requestSent: false,
-                requestReceived: false
-            }
+
             const user = await User.findOne({ username }).populate("details").select("-password")
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }
 
             //conditions check
-            if (me.friends.includes(user._id) && user.friends.includes(me._id)) { //we are friends
+            const friendship = {
+                friend: false,
+                following: false,
+                requestSent: false,
+                requestReceived: false
+            }
+            if (username !== req.user.username) {
+                if (me?.friends?.includes(user?._id) && user.friends.includes(me?._id)) { //we are friends
                 friendship.friend = true
             }
-            if (me.following.includes(user._id)) { //I follow him
+                if (me?.following?.includes(user?._id)) { //I follow him
                 friendship.following = true
             }
-            if (user.requests.includes(me._id)) { //I sent he-she friend request
+                if (user?.requests?.includes(me?._id)) { //I sent him-her friend request
                 friendship.requestSent = true
             }
-            if (me.requests.includes(user._id)) { //he-she sent me friend request
+                if (me?.requests?.includes(user?._id)) { //he-she sent me friend request
                 friendship.requestReceived = true
+                }
             }
             const posts = await Post.find({ user: user._id })
                 .populate("user", "first_name last_name email picture username gender")

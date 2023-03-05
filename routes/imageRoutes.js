@@ -6,7 +6,7 @@ const { protect } = require("../middleware/protect")
 router.post("/uploadForRegister", imageCtrl.upload)
 router.post("/upload", protect, imageCtrl.upload)
 router.post("/listImages", protect, imageCtrl.listImages)
-router.get("/listImages2/:max", protect, imageCtrl.listImages2)
+router.get("/listImages2/:max/:id", protect, imageCtrl.listImages2)
 
 
 

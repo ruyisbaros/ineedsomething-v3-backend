@@ -2,6 +2,7 @@ const cloudinary = require("cloudinary")
 const { uploadToCloudinary } = require("../helpers/imageService")
 const PostImages = require("../models/postImagesModel")
 const UserImages = require("../models/userImagesModel")
+const mongoose = require("mongoose")
 
 exports.imageCtrl = {
     upload: async (req, res) => {
@@ -38,9 +39,9 @@ exports.imageCtrl = {
     },
     listImages2: async (req, res) => {
         try {
-            const { max } = req.params
-            const imageArr1 = await PostImages.find({ owner: req.user._id }).sort({ createdAt: -1 })
-            const imageArr2 = await UserImages.find({ owner: req.user._id }).sort({ createdAt: -1 })
+            const { max, id } = req.params
+            const imageArr1 = await PostImages.find({ owner: id.match(/^[0-9a-fA-F]{24}$/) && id }).sort({ createdAt: -1 })
+            const imageArr2 = await UserImages.find({ owner: id.match(/^[0-9a-fA-F]{24}$/) && id }).sort({ createdAt: -1 })
             const listImages = imageArr1.concat(imageArr2).slice(0, max)
             res.status(200).json(listImages)
         } catch (error) {
