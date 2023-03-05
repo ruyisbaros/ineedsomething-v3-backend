@@ -39,9 +39,10 @@ exports.imageCtrl = {
     },
     listImages2: async (req, res) => {
         try {
-            const { max, id } = req.params
-            const imageArr1 = await PostImages.find({ owner: id.match(/^[0-9a-fA-F]{24}$/) && id }).sort({ createdAt: -1 })
-            const imageArr2 = await UserImages.find({ owner: id.match(/^[0-9a-fA-F]{24}$/) && id }).sort({ createdAt: -1 })
+            let { max, id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
+            const imageArr1 = await PostImages.find({ owner: id }).sort({ createdAt: -1 })
+            const imageArr2 = await UserImages.find({ owner: id }).sort({ createdAt: -1 })
             const listImages = imageArr1.concat(imageArr2).slice(0, max)
             res.status(200).json(listImages)
         } catch (error) {

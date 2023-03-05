@@ -2,6 +2,7 @@ const User = require("../models/userModel")
 const Post = require("../models/postModel")
 const Image = require("../models/userImagesModel")
 const { uploadToCloudinary } = require("../helpers/imageService")
+const mongoose = require("mongoose")
 
 const userCtrl = {
     findUserByEmail: async (req, res) => {
@@ -22,7 +23,7 @@ const userCtrl = {
     getProfile: async (req, res) => {
         try {
             const { username } = req.params
-            const me = await User.findOne({ id: req.user._id })
+           // const me = await User.findOne({ id: req.user._id })
 
             const user = await User.findOne({ username }).populate("details").select("-password")
             if (!user) {
@@ -30,7 +31,7 @@ const userCtrl = {
             }
 
             //conditions check
-            const friendship = {
+            /* const friendship = {
                 friend: false,
                 following: false,
                 requestSent: false,
@@ -40,7 +41,7 @@ const userCtrl = {
                 if (me?.friends?.includes(user?._id) && user.friends.includes(me?._id)) { //we are friends
                 friendship.friend = true
             }
-                if (me?.following?.includes(user?._id)) { //I follow him
+                if (me?.following?.includes(new mongoose.Types.ObjectId(user?._id))) { //I follow him
                 friendship.following = true
             }
                 if (user?.requests?.includes(me?._id)) { //I sent him-her friend request
@@ -49,13 +50,13 @@ const userCtrl = {
                 if (me?.requests?.includes(user?._id)) { //he-she sent me friend request
                 friendship.requestReceived = true
                 }
-            }
+            } */
             const posts = await Post.find({ user: user._id })
                 .populate("user", "first_name last_name email picture username gender")
                 .sort({ createdAt: -1 })
 
 
-            res.status(200).json({ user, posts, friendship })
+            res.status(200).json({ user, posts })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
@@ -101,16 +102,17 @@ const userCtrl = {
     },
     sendFriendRequest: async (req, res) => {
         try {
-            const { id } = req.params
+            let { id } = req.params
+            id = id.match(/^[0-9a-fA-F]{24}$/) && id
             if (req.user._id !== id) {
                 const sender = await User.findById(req.user._id)
                 const receiver = await User.findById(id)
                 if (!receiver.requests.includes(sender._id) && !receiver.friends.includes(sender._id)) {
-                    const updatedReceiver = await receiver.update({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $push: { requests: sender._id, followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.updateOne({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Friend request has been sent" })
@@ -131,11 +133,11 @@ const userCtrl = {
                 const sender = await User.findById(req.user._id)
                 const receiver = await User.findById(id)
                 if (receiver.requests.includes(sender._id)) {
-                    const updatedReceiver = await receiver.update({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $pull: { requests: sender._id, followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.updateOne({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $pull: { following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Friend request has been cancelled" })
@@ -157,12 +159,12 @@ const userCtrl = {
                 const sender = await User.findById(id)
                 if (receiver.requests.includes(sender._id) &&
                     !receiver.friends.includes(sender._id)) {
-                    const updatedReceiver = await receiver.update({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $pull: { requests: sender._id },
                         $push: { friends: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.updateOne({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { friends: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Friend request has been accepted" })
@@ -184,20 +186,20 @@ const userCtrl = {
             if (req.user._id !== id) {
                 if (!sender.following.includes(receiver._id) &&
                     !receiver.followers.includes(sender._id)) {
-                    const updatedReceiver = await receiver.updateOne({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $push: { followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.updateOne({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Started to follow" })
                 } else {
-                    const updatedReceiver = await receiver.updateOne({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $pull: { followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.updateOne({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $pull: { following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Stopped  following" })
@@ -217,11 +219,11 @@ const userCtrl = {
                 const receiver = await User.findById(id)
                 if (sender.friends.includes(receiver._id) &&
                     receiver.friends.includes(sender._id)) {
-                    const updatedReceiver = await receiver.update({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $pull: { friends: sender._id, followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.update({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $pull: { friends: receiver._id, following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Removed from friend list" })
@@ -254,11 +256,11 @@ const userCtrl = {
                 const receiver = await User.findById(req.user._id)
                 const sender = await User.findById(id)
                 if (receiver.requests.includes(sender._id)) {
-                    const updatedReceiver = await receiver.update({
+                    const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
                         $pull: { requests: sender._id, followers: sender._id }
                     }, { new: true }).select("-password")
 
-                    const updatedSender = await sender.update({
+                    const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $pull: { following: receiver._id }
                     }, { new: true }).select("-password")
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Removed from request list" })
