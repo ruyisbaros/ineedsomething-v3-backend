@@ -26,9 +26,9 @@ const authCtrl = {
                 bDay
             } = req.body
             //console.log(req.body)
-            console.log(typeof picture)
+            //console.log(typeof picture)
             const img = await uploadToCloudinary(picture, path)
-            console.log(img.public_id.split("profileImages/")[1])
+            //console.log(img.public_id.split("profileImages/")[1])
             const createdImg = await Image.create({ url: img.url, public_id: img.public_id.split("profileImages/")[1], type: "profile" })
             const user = await User.create({
                 first_name,

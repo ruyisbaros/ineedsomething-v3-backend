@@ -30,27 +30,6 @@ const userCtrl = {
                 return res.status(401).json({ message: "No user found!" });
             }
 
-            //conditions check
-            /* const friendship = {
-                friend: false,
-                following: false,
-                requestSent: false,
-                requestReceived: false
-            }
-            if (username !== req.user.username) {
-                if (me?.friends?.includes(user?._id) && user.friends.includes(me?._id)) { //we are friends
-                friendship.friend = true
-            }
-                if (me?.following?.includes(new mongoose.Types.ObjectId(user?._id))) { //I follow him
-                friendship.following = true
-            }
-                if (user?.requests?.includes(me?._id)) { //I sent him-her friend request
-                friendship.requestSent = true
-            }
-                if (me?.requests?.includes(user?._id)) { //he-she sent me friend request
-                friendship.requestReceived = true
-                }
-            } */
             const posts = await Post.find({ user: user._id })
                 .populate("user", "first_name last_name email picture username gender")
                 .sort({ createdAt: -1 })
