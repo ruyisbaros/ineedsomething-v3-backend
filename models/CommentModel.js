@@ -4,8 +4,8 @@ const { ObjectId } = mongoose.Types
 const commentSchema = new mongoose.Schema({
     comment: String,
     image: {
-        type: ObjectId,
-        ref: "CommentImage",
+        type: String,
+        default: "",
     },
     commentBy: {
         type: ObjectId,
@@ -16,7 +16,7 @@ const commentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "User",
     },
-    post: {
+    commentPost: {
         type: ObjectId,
         ref: "Post",
     },
