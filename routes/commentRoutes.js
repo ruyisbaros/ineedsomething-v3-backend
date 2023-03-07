@@ -3,6 +3,7 @@ const commentCtrl = require('./../controllers/commentController');
 const { protect } = require("../middleware/protect")
 
 router.post("/add_comment", protect, commentCtrl.addComment)
-router.get("/get_post_comments/:postId", protect, commentCtrl.getComment)
+router.get("/get_comments", protect, commentCtrl.getComments)
+router.get("/get_post_comments/:commentPost", protect, commentCtrl.getPostComments)
 
 module.exports = router

@@ -14,10 +14,6 @@ const commentImages = new mongoose.Schema({
         type: ObjectId,
         ref: "Post",
     },
-    comment: {
-        type: ObjectId,
-        ref: "Comment",
-    },
     owner: {
         type: ObjectId,
         ref: "User",
