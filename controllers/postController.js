@@ -1,5 +1,7 @@
 const { uploadToCloudinary } = require("../helpers/imageService")
+const mongoose = require("mongoose")
 const Post = require("../models/postModel")
+const User = require("../models/userModel")
 const PostImages = require("../models/postImagesModel")
 
 /* ------------------Helpers---------------------------- */
@@ -25,19 +27,31 @@ exports.postCtrl = {
             //console.log(req.body)
             const { path, user, background, text, images } = req.body
             const newPost = await Post.create({ user, background, text })
-            const urls = await uploadPostImages(images, path, newPost, user)
-            const updatedPost = await Post.findByIdAndUpdate(newPost._id, { images: urls }, { new: true }).populate("user", "first_name last_name email picture username gender")
-            res.status(201).json(updatedPost)
+            await newPost.populate("user", "first_name last_name email picture username gender")
+            if (images) {
+                const urls = await uploadPostImages(images, path, newPost, user)
+                const updatedPost = await Post.findByIdAndUpdate(newPost._id, { images: urls }, { new: true }).populate("user", "first_name last_name email picture username gender")
+                return res.status(201).json(updatedPost)
+            }
+            res.status(201).json(newPost)
         } catch (error) {
+            console.log(error.message)
             return res.status(500).json({ message: error.message })
         }
     },
+    /* const followingTemp = await User.findById(req.user.id).select("following");
+const following = followingTemp.following;
+const followingPosts = await Post.find({ user: { $in: following } }) */
     getAllPosts: async (req, res) => {
         try {
-            const posts = await Post.find()
+            const followingTemp = await User.findById(req.user.id).select("following");
+            const following = followingTemp.following;
+            //console.log(following)
+            const followingPosts = await Post.find({ $or: [{ user: { $in: following } }, { user: { $eq: mongoose.Types.ObjectId(req.user._id) } }] })
                 .populate("user", "first_name last_name email picture username gender")
                 .sort({ createdAt: -1 })
-            res.status(200).json(posts)
+                .exec()
+            res.status(200).json(followingPosts)
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }

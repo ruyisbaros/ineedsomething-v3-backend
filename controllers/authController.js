@@ -135,6 +135,7 @@ const authCtrl = {
     refresh_token: async (req, res) => {
         try {
             //const access_token = generateAccessToken({ id: loggedUser._id })
+            //console.log(req.session)
             const token = req.session?.jwtR
             //console.log(req.session, token)
             if (!token) return res.status(500).json({ message: "Please login again" })
@@ -142,6 +143,7 @@ const authCtrl = {
             if (!id) return res.status(500).json({ message: "Please login again" })
 
             const user = await User.findOne({ _id: id }).select("-password")
+            //console.log(user)
             if (!user) return res.status(500).json({ message: "This account does not exist!" })
             //console.log(user)
             const access_token = createJsonToken({ id: user._id.toString() }, "13d")
@@ -158,7 +160,11 @@ const authCtrl = {
     },
     logout: async (req, res) => {
         try {
-            req.session = null;
+            req.session = {
+                jwtR: null,
+                jwt: null
+            };
+
             return res.status(200).json({ message: "You have been logged out!" })
         } catch (err) {
             return res.status(500).json({ message: err.message })
