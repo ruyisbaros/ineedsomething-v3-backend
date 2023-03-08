@@ -30,6 +30,11 @@ exports.uploadToCloudinary = (file, path) => {
         );
     })
 };
+exports.deleteImage = async (public_id) => {
+    cloudinary.v2.uploader.destroy(public_id, (err, result) => {
+        if (err) throw err;
+    })
+}
 
 function removeTmp(url) {
     fs.unlink(url, (err) => {

@@ -1,4 +1,4 @@
-const { uploadToCloudinary } = require("../helpers/imageService")
+const { uploadToCloudinary, deleteImage } = require("../helpers/imageService")
 const mongoose = require("mongoose")
 const Post = require("../models/postModel")
 const User = require("../models/userModel")
@@ -39,9 +39,7 @@ exports.postCtrl = {
             return res.status(500).json({ message: error.message })
         }
     },
-    /* const followingTemp = await User.findById(req.user.id).select("following");
-const following = followingTemp.following;
-const followingPosts = await Post.find({ user: { $in: following } }) */
+
     getAllPosts: async (req, res) => {
         try {
             const followingTemp = await User.findById(req.user.id).select("following");
@@ -52,6 +50,24 @@ const followingPosts = await Post.find({ user: { $in: following } }) */
                 .sort({ createdAt: -1 })
                 .exec()
             res.status(200).json(followingPosts)
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    },
+    deleteAPost: async (req, res) => {
+        try {
+            const { postId } = req.params
+            //1.) Delete post images from cloud
+            const postImages = await PostImages.find({ post: mongoose.Types.ObjectId(postId) })
+            const promises = postImages.map(async img => (
+                await deleteImage(img.public_id)
+            ))
+            await Promise.all(promises)
+            //2.) Delete post images from db
+            await PostImages.deleteMany({ post: postId })
+            //3.) Delete post from DB
+            await Post.findByIdAndDelete(postId)
+            res.status(200).json({ message: "Post has been deleted successfully" })
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }
