@@ -1,5 +1,6 @@
 const React = require("../models/reactModel")
 const User = require("../models/userModel")
+const Post = require("../models/postModel")
 const mongoose = require("mongoose")
 const reactCtrl = {
     addReact: async (req, res) => {
@@ -26,7 +27,11 @@ const reactCtrl = {
                     await React.findByIdAndUpdate(check._id, { react })
                 }
             }
-
+            //Create notification
+            const reactedPost = await Post.findById(postId)
+            if (reactedPost.user.toString() !== req.user._id.toString()) {
+                await createNotify(req.user._id, reactedPost.user, `${req.user.first_name} reacted your post`)
+            }
             res.status(200).json({ message: "ok" })
         } catch (error) {
             return res.status(500).json({ message: error.message })

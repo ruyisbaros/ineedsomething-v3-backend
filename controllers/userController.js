@@ -1,4 +1,5 @@
 const User = require("../models/userModel")
+const { createNotify } = require('./../helpers/createNotify');
 const Post = require("../models/postModel")
 const Image = require("../models/userImagesModel")
 const { uploadToCloudinary } = require("../helpers/imageService")
@@ -29,7 +30,11 @@ const userCtrl = {
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }
-
+            console.log(user, req.user._id.toString())
+            //Create notification
+            if (user._id.toString() !== req.user._id.toString()) {
+                await createNotify(req.user._id, user._id, `${req.user.first_name} viewed your profile`)
+            }
             const posts = await Post.find({ user: user._id })
                 .populate("user", "first_name last_name email picture username gender")
                 .sort({ createdAt: -1 })
@@ -94,6 +99,9 @@ const userCtrl = {
                     const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { following: receiver._id }
                     }, { new: true }).select("-password")
+                    //Create notification
+                    await createNotify(sender._id, receiver._id, `${sender.first_name} send you a friend request`)
+
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Friend request has been sent" })
                 } else {
                     return res.status(500).json({ message: "Already sent!" })
@@ -148,6 +156,8 @@ const userCtrl = {
                     const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { friends: receiver._id }
                     }, { new: true }).select("-password")
+                    //Create notification
+                    await createNotify(receiver._id, sender._id, `${receiver.first_name} accepted your friend request`)
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Friend request has been accepted" })
                 } else {
                     return res.status(500).json({ message: "No Request found!" })
@@ -175,6 +185,8 @@ const userCtrl = {
                     const updatedSender = await User.findByIdAndUpdate(sender._id, {
                         $push: { following: receiver._id }
                     }, { new: true }).select("-password")
+                    //Create notification
+                    await createNotify(sender._id, receiver._id, `${sender.first_name} started to follow you`)
                     res.status(200).json({ updatedReceiver, updatedSender, message: "Started to follow" })
                 } else {
                     const updatedReceiver = await User.findByIdAndUpdate(receiver._id, {
