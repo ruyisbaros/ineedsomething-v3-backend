@@ -1,4 +1,5 @@
 const React = require("../models/reactModel")
+const User = require("../models/userModel")
 const mongoose = require("mongoose")
 const reactCtrl = {
     addReact: async (req, res) => {
@@ -68,12 +69,19 @@ const reactCtrl = {
                     count: groupReacts.angry ? groupReacts.angry.length : 0
                 },
             ].sort((a, b) => b.count - a.count)
-
+            const user = await User.findById(req.user._id)
+            const checkSaved = user.savedPosts.find(item => item.post.toString() === postId)
+            //console.log(checkSaved)
             const check = await React.findOne({
                 postRef: postId,
                 reactBy: mongoose.Types.ObjectId(req.user._id)
             })
-            res.status(200).json({ reacts: returnedReacts, check, total: reacts.length })
+            res.status(200).json({
+                reacts: returnedReacts,
+                check,
+                total: reacts.length,
+                checkSaved: checkSaved ? true : false
+            })
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }

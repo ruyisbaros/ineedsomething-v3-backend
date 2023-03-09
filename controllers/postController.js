@@ -10,7 +10,7 @@ const createPostImage = async (image, post, user) => {
 }
 const operations = async (img, path, post, user) => {
     const image = await uploadToCloudinary(img, path)
-    //console.log(image)
+    console.log(image)
     await createPostImage(image, post, user)
     return image.url
 }
@@ -56,11 +56,11 @@ exports.postCtrl = {
     },
     deleteAPost: async (req, res) => {
         try {
-            const { postId } = req.params
+            const { postId, email } = req.params
             //1.) Delete post images from cloud
             const postImages = await PostImages.find({ post: mongoose.Types.ObjectId(postId) })
             const promises = postImages.map(async img => (
-                await deleteImage(img.public_id)
+                await deleteImage(`iNeedSomething/${email}/postImages/${img.public_id}`)
             ))
             await Promise.all(promises)
             //2.) Delete post images from db
@@ -68,6 +68,35 @@ exports.postCtrl = {
             //3.) Delete post from DB
             await Post.findByIdAndDelete(postId)
             res.status(200).json({ message: "Post has been deleted successfully" })
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    },
+    saveAPost: async (req, res) => {
+        try {
+            const { postId } = req.params
+            const user = await User.findById(req.user._id)
+            const check = user.savedPosts.find(item => item.post.toString() === postId)
+            if (check) {
+                await User.findByIdAndUpdate(req.user._id, {
+                    $pull: {
+                        savedPosts: {
+                            post: postId,
+                        }
+                    }
+                })
+                res.status(200).json({ message: "Post has been removed successfully" })
+            } else {
+                await User.findByIdAndUpdate(req.user._id, {
+                    $push: {
+                        savedPosts: {
+                            post: postId,
+                            savedAt: new Date()
+                        }
+                    }
+                })
+                res.status(200).json({ message: "Post has been saved successfully" })
+            }
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }
