@@ -61,6 +61,7 @@ app.use("/api/v3/users", routes.userRoutes)
 app.use("/api/v3/images", routes.imageRoutes)
 app.use("/api/v3/post/reacts", routes.reactRoutes)
 app.use("/api/v3/post/comments", routes.commentRoutes)
+app.use("/api/v3/user/notifications", routes.notifyRoutes)
 
 
 app.listen(5000, () => {

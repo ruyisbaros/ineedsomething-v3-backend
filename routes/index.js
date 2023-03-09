@@ -5,6 +5,7 @@ const imageRoutes = require("./imageRoutes")
 const healthRoutes = require("./healthRoutes")
 const reactRoutes = require("./reactRoutes")
 const commentRoutes = require("./commentRoutes")
+const notifyRoutes = require("./notifyRoute")
 
 const routes = {
     authRoutes,
@@ -13,7 +14,8 @@ const routes = {
     imageRoutes,
     healthRoutes,
     reactRoutes,
-    commentRoutes
+    commentRoutes,
+    notifyRoutes
 }
 
 module.exports = routes
