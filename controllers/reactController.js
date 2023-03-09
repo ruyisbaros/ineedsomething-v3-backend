@@ -1,7 +1,10 @@
 const React = require("../models/reactModel")
 const User = require("../models/userModel")
 const Post = require("../models/postModel")
+const { createNotify } = require('./../helpers/createNotify');
 const mongoose = require("mongoose")
+
+
 const reactCtrl = {
     addReact: async (req, res) => {
         const { react, postId } = req.body

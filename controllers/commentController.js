@@ -1,6 +1,8 @@
 const Comment = require("../models/CommentModel")
 const CommentImage = require("../models/commentImagesModel")
 const { uploadToCloudinary } = require("../helpers/imageService")
+const Post = require("../models/postModel")
+const { createNotify } = require('./../helpers/createNotify');
 
 const commentCtrl = {
     addComment: async (req, res) => {
@@ -18,6 +20,11 @@ const commentCtrl = {
                 commentBy: req.user._id,
                 commentPost
             })
+            //Create notification
+            const commentedPost = await Post.findById(commentPost)
+            if (commentedPost.user.toString() !== req.user._id.toString()) {
+                await createNotify(req.user._id, commentedPost.user, `${req.user.first_name} commented your post`)
+            }
             const commentTurn = await Comment.findById(newComment._id).populate("commentBy", "first_name last_name email picture username")
             res.status(200).json({ comment: commentTurn, message: "ok" })
         } catch (error) {

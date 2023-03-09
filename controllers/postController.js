@@ -42,10 +42,11 @@ exports.postCtrl = {
 
     getAllPosts: async (req, res) => {
         try {
-            const followingTemp = await User.findById(req.user.id).select("following");
+            const followingTemp = await User.findById(req.user.id);
             const following = followingTemp.following;
+            const friends = followingTemp.friends;
             //console.log(following)
-            const followingPosts = await Post.find({ $or: [{ user: { $in: following } }, { user: { $eq: mongoose.Types.ObjectId(req.user._id) } }] })
+            const followingPosts = await Post.find({ $or: [{ user: { $in: following } }, { user: { $in: friends } }, { user: { $eq: mongoose.Types.ObjectId(req.user._id) } }] })
                 .populate("user", "first_name last_name email picture username gender")
                 .sort({ createdAt: -1 })
                 .exec()
