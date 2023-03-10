@@ -269,7 +269,25 @@ const userCtrl = {
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
-    }
+    },
+    /* $or: [{ first_name: { $regex: regex } }, { last_name: { $regex: regex } },
+         { email: { $regex: regex } }] */
+    searchUsers: async (req, res) => {
+        try {
+            const { search } = req.params
+            //let regex = new RegExp(`^[${search}0-9._-]+$`, "ig")
+            const searchQuery = search.replace(/[.*+?^${}()|[]\]/g, '\$&'); // escape regexp symbols 
+            const searchedUsers = await User.find({
+                $or: [{ first_name: new RegExp(`${searchQuery}`, 'i') }, { last_name: new RegExp(`${searchQuery}`, 'i') },
+                { email: new RegExp(`${searchQuery}`, 'i') }]
+            });
+
+
+            res.status(200).json({ searchedUsers, message: "People you searched" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
 }
 
 module.exports = userCtrl
