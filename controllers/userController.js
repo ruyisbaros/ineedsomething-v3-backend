@@ -280,10 +280,45 @@ const userCtrl = {
             const searchedUsers = await User.find({
                 $or: [{ first_name: new RegExp(`${searchQuery}`, 'i') }, { last_name: new RegExp(`${searchQuery}`, 'i') },
                 { email: new RegExp(`${searchQuery}`, 'i') }]
-            });
+            }).limit(7);
 
 
             res.status(200).json({ searchedUsers, message: "People you searched" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    createSearchHistory: async (req, res) => {
+        try {
+            const { id } = req.params
+            const searched = {
+                user: mongoose.Types.ObjectId(id),
+                createdAt: new Date()
+            }
+            const user = await User.findById(req.user._id)
+            const check = user.search.find(x => x.user.toString() === id)
+            if (check) {
+                await User.updateOne({
+                    _id: req.user._id,
+                    "search._id": check._id
+                }, {
+                    $set: { "search.$.createdAt": new Date() }
+                })
+            } else {
+                await User.findByIdAndUpdate(req.user._id, { $push: { search: searched } })
+            }
+            res.status(200).json({ message: "Ok" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    getSearchHistory: async (req, res) => {
+        try {
+            const user = await User.findById(req.user._id)
+                .select("search")
+                .populate("search.user", "first_name last_name picture username")
+                .limit(5)
+            res.status(200).json({ history: user.search, message: "Ok" })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
