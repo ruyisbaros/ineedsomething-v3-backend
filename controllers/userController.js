@@ -270,8 +270,6 @@ const userCtrl = {
             res.status(500).json({ message: error.message })
         }
     },
-    /* $or: [{ first_name: { $regex: regex } }, { last_name: { $regex: regex } },
-         { email: { $regex: regex } }] */
     searchUsers: async (req, res) => {
         try {
             const { search } = req.params
@@ -281,8 +279,6 @@ const userCtrl = {
                 $or: [{ first_name: new RegExp(`${searchQuery}`, 'i') }, { last_name: new RegExp(`${searchQuery}`, 'i') },
                 { email: new RegExp(`${searchQuery}`, 'i') }]
             }).limit(7);
-
-
             res.status(200).json({ searchedUsers, message: "People you searched" })
         } catch (error) {
             res.status(500).json({ message: error.message })
@@ -319,6 +315,17 @@ const userCtrl = {
                 .populate("search.user", "first_name last_name picture username")
                 .limit(5)
             res.status(200).json({ history: user.search, message: "Ok" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    deleteFromSearchHistory: async (req, res) => {
+        try {
+            const { id } = req.params
+            await User.findByIdAndUpdate(req.user._id, {
+                $pull: { search: { user: mongoose.Types.ObjectId(id) } }
+            })
+            res.status(200).json({ message: "Ok" })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
