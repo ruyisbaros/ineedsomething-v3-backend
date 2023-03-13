@@ -3,6 +3,7 @@ const CommentImage = require("../models/commentImagesModel")
 const { uploadToCloudinary } = require("../helpers/imageService")
 const Post = require("../models/postModel")
 const { createNotify } = require('./../helpers/createNotify');
+const mongoose = require("mongoose");
 
 const commentCtrl = {
     addComment: async (req, res) => {
@@ -33,7 +34,10 @@ const commentCtrl = {
     },
     getComments: async (req, res) => {
         try {
-            const comments = await Comment.find().populate("commentBy", "first_name last_name email picture username").sort({ createdAt: -1 })
+            const comments = await Comment.find()
+                .populate("commentBy", "first_name last_name email picture username")
+                .populate("likes.user", "first_name last_name email picture username")
+                .sort({ createdAt: -1 })
             res.status(200).json(comments)
         } catch (error) {
             return res.status(500).json({ message: error.message })
@@ -42,8 +46,22 @@ const commentCtrl = {
     getPostComments: async (req, res) => {
         try {
             const { commentPost } = req.params
-            const comments = await Comment.find({ commentPost }).populate("commentBy", "first_name last_name email picture username")
+            const comments = await Comment.find({ commentPost })
             res.status(200).json(comments)
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    },
+    likeUnlikeComment: async (req, res) => {
+        try {
+            const { commentId } = req.params
+            const comment = await Comment.findById(commentId)
+            if (comment.likes.includes(mongoose.Types.ObjectId(req.user._id))) {
+                await Comment.findByIdAndUpdate(commentId, { $pull: { likes: mongoose.Types.ObjectId(req.user._id) } })
+            } else {
+                await Comment.findByIdAndUpdate(commentId, { $push: { likes: mongoose.Types.ObjectId(req.user._id) } })
+            }
+            res.status(200).json({ message: "Ok" })
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }

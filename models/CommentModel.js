@@ -12,6 +12,12 @@ const commentSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    likes: [
+        {
+            type: ObjectId,
+            ref: "User",
+        },
+    ], 
     reply: {
         type: ObjectId,
         ref: "User",
