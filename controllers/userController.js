@@ -30,7 +30,7 @@ const userCtrl = {
             if (!user) {
                 return res.status(401).json({ message: "No user found!" });
             }
-            console.log(user, req.user._id.toString())
+            //console.log(user, req.user._id.toString())
             //Create notification
             if (user._id.toString() !== req.user._id.toString()) {
                 await createNotify(req.user._id, user._id, `${req.user.first_name} viewed your profile`)

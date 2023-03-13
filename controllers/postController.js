@@ -10,7 +10,7 @@ const createPostImage = async (image, post, user) => {
 }
 const operations = async (img, path, post, user) => {
     const image = await uploadToCloudinary(img, path)
-    console.log(image)
+    //console.log(image)
     await createPostImage(image, post, user)
     return image.url
 }
