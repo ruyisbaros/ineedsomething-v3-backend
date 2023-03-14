@@ -66,7 +66,16 @@ const commentCtrl = {
         } catch (error) {
             return res.status(500).json({ message: error.message })
         }
-    }
+    },
+    deleteAComment: async (req, res) => {
+        try {
+            const { id } = req.params
+            await Comment.findByIdAndDelete(id)
+            res.status(200).json({ message: "Ok" })
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
+        }
+    },
 }
 
 module.exports = commentCtrl
