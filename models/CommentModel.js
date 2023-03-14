@@ -20,8 +20,8 @@ const commentSchema = new mongoose.Schema({
     ], 
     reply: {
         type: ObjectId,
-        ref: "User",
     },
+    tag: Object,
     commentPost: {
         type: ObjectId,
         ref: "Post",

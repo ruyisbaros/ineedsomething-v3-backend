@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 
 const commentCtrl = {
     addComment: async (req, res) => {
-        const { comment, pic, path, commentPost, reply } = req.body
+        const { comment, pic, path, commentPost, reply, tag } = req.body
         let img;
         try {
             if (pic) {
@@ -19,7 +19,8 @@ const commentCtrl = {
                 reply,
                 image: img?.url,
                 commentBy: req.user._id,
-                commentPost
+                commentPost,
+                tag
             })
             //Create notification
             const commentedPost = await Post.findById(commentPost)
@@ -36,7 +37,7 @@ const commentCtrl = {
         try {
             const comments = await Comment.find()
                 .populate("commentBy", "first_name last_name email picture username")
-                .populate("likes.user", "first_name last_name email picture username")
+                //.populate("likes", "first_name last_name email picture username")
                 .sort({ createdAt: -1 })
             res.status(200).json(comments)
         } catch (error) {
