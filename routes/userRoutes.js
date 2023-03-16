@@ -4,7 +4,7 @@ const { protect } = require("../middleware/protect")
 
 router.get("/find_user_email/:email", userCtrl.findUserByEmail)
 router.get("/get_profile/:username", protect, userCtrl.getProfile)
-router.get("/follow_offers", protect, userCtrl.followOffers)
+router.get("/friend_offers", protect, userCtrl.friendOffers)
 router.get("/user_friends_info", protect, userCtrl.getFriendsInfo)
 router.get("/search_users/:search", protect, userCtrl.searchUsers)
 router.get("/get_search_history", protect, userCtrl.getSearchHistory)

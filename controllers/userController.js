@@ -232,14 +232,17 @@ const userCtrl = {
             res.status(500).json({ message: error.message })
         }
     },
-    followOffers: async (req, res) => {
+    friendOffers: async (req, res) => {
         try {
-            const myFriends = await User.find({ followers: { $in: [req.user._id] } })
-            const response = myFriends.map(async () => (
-                await User.findOne({ followers: { $nin: [req.user._id] } })
-            ))
-            const followOffers = await Promise.all(response)
-            res.status(200).json({ followOffers, message: "People you may follow" })
+            const newArray = [...req.user.following, req.user._id]
+            const num = req.query.num || 10
+            const users = await User.aggregate([
+                { $match: { _id: { $nin: newArray } } },
+                { $sample: { size: num } },
+                { $lookup: { from: "User", localField: "followers", foreignField: "_id", as: "followers" } },
+                { $lookup: { from: "User", localField: "following", foreignField: "_id", as: "following" } },
+            ]).project("-password")
+            res.status(200).json({ users, result: users.length, message: "People you may follow" })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
