@@ -7,6 +7,7 @@ const cors = require("cors")
 const helmet = require("helmet")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
+const SocketServer = require("./socketServer")
 
 
 const app = express()
@@ -66,6 +67,13 @@ mongoose.connect(process.env.DB_URL, {
         console.log(e)
     })
 mongoose.set('strictQuery', false);
+
+//Socket functions
+const users = []
+io.on("connection", (socket) => {
+    // console.log("Connected to: ", socket.id)
+    SocketServer(socket)
+})
 //Routes
 app.use("", routes.healthRoutes)
 app.use("/api/v3/auth", routes.authRoutes)
@@ -75,12 +83,6 @@ app.use("/api/v3/images", routes.imageRoutes)
 app.use("/api/v3/post/reacts", routes.reactRoutes)
 app.use("/api/v3/post/comments", routes.commentRoutes)
 app.use("/api/v3/user/notifications", routes.notifyRoutes)
-
-
-
-io.on("connection", (socket) => {
-    console.log("Connected to: ", socket.id)
-})
 
 http.listen(5000, () => {
     console.log("Server runs at port 5000")
