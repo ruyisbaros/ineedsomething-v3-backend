@@ -8,7 +8,19 @@ const helmet = require("helmet")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
 
+
 const app = express()
+//Sockets
+const http = require("http").createServer(app)
+const io = require("socket.io")(http, {
+    cors: {
+        origin: `${process.env.FRONT_URL}`,
+        credentials: true,
+        allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin", "X-PINGOTHER"],
+        preflightContinue: false,
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    }
+})
 
 //Related middleware
 app.set("trust proxy", 1)
@@ -19,9 +31,9 @@ app.use(
             //domain: "https://ineedsomething.org",
             keys: [`${process.env.KEY_ONE}`, `${process.env.KEY_TWO}`],
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            secure: true,
-            //secure: process.env.NODE_ENV === "production",
-            sameSite: "none",//use for production
+            //secure: true,
+            secure: process.env.NODE_ENV === "production",
+            //sameSite: "none",//use for production
         })
 )
 
@@ -65,6 +77,11 @@ app.use("/api/v3/post/comments", routes.commentRoutes)
 app.use("/api/v3/user/notifications", routes.notifyRoutes)
 
 
-app.listen(5000, () => {
+
+io.on("connection", (socket) => {
+    console.log("Connected to: ", socket.id)
+})
+
+http.listen(5000, () => {
     console.log("Server runs at port 5000")
 })
