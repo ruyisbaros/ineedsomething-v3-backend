@@ -69,9 +69,9 @@ mongoose.connect(process.env.DB_URL, {
 mongoose.set('strictQuery', false);
 
 //Socket functions
-const users = []
+
 io.on("connection", (socket) => {
-    // console.log("Connected to: ", socket.id)
+    //console.log("Connected to: ", socket.id)
     SocketServer(socket)
 })
 //Routes
