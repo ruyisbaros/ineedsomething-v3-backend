@@ -8,7 +8,7 @@ const helmet = require("helmet")
 const morgan = require("morgan")
 const mongoose = require("mongoose")
 const SocketServer = require("./socketServer")
-
+//const WebSocketServer = require("websocket").server
 
 const app = express()
 //Sockets
@@ -87,3 +87,21 @@ app.use("/api/v3/user/notifications", routes.notifyRoutes)
 http.listen(5000, () => {
     console.log("Server runs at port 5000")
 })
+
+/* const wss = new WebSocketServer({
+    httpServer: http
+})
+
+const clients = {}
+const getUniqID = () => {
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+
+    return s4() + s4() + "-" + s4()
+}
+wss.on("request", (request) => {
+    const userID = getUniqID()
+    console.log((new Date()) + "request received from: " + request.origin)
+
+    const connection = request.accept(null, request.origin)
+    clients[userID]=connection
+}) */

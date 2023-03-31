@@ -26,6 +26,7 @@
     "google-auth-library": "^8.7.0",
     "googleapis": "^111.0.0",
     "helmet": "^6.0.1",
+    "http": "^0.0.1-security",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
@@ -34,7 +35,9 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1",
     "socket.io": "^4.6.1",
-    "swagger-stats": "^0.99.5"
+    "swagger-stats": "^0.99.5",
+    "websocket": "^1.0.34",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
