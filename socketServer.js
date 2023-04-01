@@ -1,9 +1,4 @@
-const { notifySender } = require("./controllers/userController")
 let users = []
-
-exports.notifySender = () => {
-
-}
 const SocketServer = (socket) => {
 
     //User who logs in
@@ -12,17 +7,17 @@ const SocketServer = (socket) => {
         if (!user) {
             users.push({ id, socketId: socket.id })
         }
-        console.log(users)
+        //console.log(users)
     })
 
     socket.on("disconnect", () => {
         users = users.filter(user => user.socketId !== socket.id)
-        console.log("disconnection")
+        //console.log("disconnection")
     })
 
     //Like post
     socket.on("likePost", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
         if (clients.length > 0) {
             clients.forEach(client => {
@@ -43,7 +38,7 @@ const SocketServer = (socket) => {
     })
     //Reply Comment
     socket.on("replyComment", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
         if (clients.length > 0) {
             clients.forEach(client => {
@@ -54,7 +49,7 @@ const SocketServer = (socket) => {
 
     //Delete Comment
     socket.on("deleteComment", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
         if (clients.length > 0) {
             clients.forEach(client => {
@@ -66,7 +61,7 @@ const SocketServer = (socket) => {
     //Delete Comment
     socket.on("likeComment", (payload) => {
         const clients = users.filter(user => user.id !== payload.id)
-        console.log("users", clients)
+        //console.log("users", clients)
         if (clients.length > 0) {
             clients.forEach(client => {
                 socket.to(client.socketId).emit('likeCommentToClient', payload)
@@ -77,7 +72,7 @@ const SocketServer = (socket) => {
     ///Notifications
     socket.on("likePostNotification", (payload) => {
         const clients = users.filter(user => user.id !== payload.id)
-        console.log("users", clients)
+        //console.log("users", clients)
         if (clients.length > 0) {
             clients.forEach(client => {
                 socket.to(client.socketId).emit('likePostNotificationToClient', payload)
@@ -86,9 +81,9 @@ const SocketServer = (socket) => {
     })
 
     socket.on("viewProfileNotification", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
-        console.log("users", clients)
+        //console.log("users", clients)
         if (clients.length > 0) {
             clients.forEach(client => {
                 socket.to(client.socketId).emit('viewProfileNotificationToClient', payload)
@@ -97,9 +92,9 @@ const SocketServer = (socket) => {
     })
 
     socket.on("commentNotification", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
-        console.log("users", clients)
+        //console.log("users", clients)
         if (clients.length > 0) {
             clients.forEach(client => {
                 socket.to(client.socketId).emit('commentNotificationToClient', payload)
@@ -108,9 +103,9 @@ const SocketServer = (socket) => {
     })
 
     socket.on("commentLikeNotification", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
-        console.log("users", clients)
+        //console.log("users", clients)
         if (clients.length > 0) {
             clients.forEach(client => {
                 socket.to(client.socketId).emit('commentLikeNotificationToClient', payload)
