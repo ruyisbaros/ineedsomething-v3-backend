@@ -9,18 +9,18 @@ const morgan = require("morgan")
 const mongoose = require("mongoose")
 const SocketServer = require("./socketServer")
 //const WebSocketServer = require("websocket").server
+const { Server } = require("socket.io")
 
 const app = express()
 //Sockets
 const http = require("http").createServer(app)
-const io = require("socket.io")(http, {
+const io = new Server(http, {
+    pingTimeout: 60000,
     cors: {
         origin: `${process.env.FRONT_URL}`,
         credentials: true,
-        allowedHeaders: ['Content-Type', "Origin", "X-Requested-Width", "Accept", 'Authorization', "X-HTTP_Method-Override", "Access-Control-Allow-Origin", "X-PINGOTHER"],
-        preflightContinue: false,
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    }
+    },
 })
 
 //Related middleware

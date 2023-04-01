@@ -1,6 +1,18 @@
 const Notification = require("../models/notificationModel")
 
 const notificationCtrl = {
+    createNotify: async (req, res) => {
+        const { from, to, content, url } = req.body
+        try {
+            const not = await Notification.create({
+                from, to, content
+            })
+            const returnNot = await Notification.findById(not._id).populate("from", "first_name last_name email picture username")
+            res.status(200).json(returnNot)
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
     deleteNotify: async (req, res) => {
         try {
             const { notifyId } = req.params

@@ -19,6 +19,9 @@ const notifySchema = new mongoose.Schema({
     read: {
         type: Boolean,
         default: false
+    },
+    url: {
+        type: String,
     }
 }, { timestamps: true })
 
