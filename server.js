@@ -86,7 +86,7 @@ app.use("/api/v3/post/reacts", routes.reactRoutes)
 app.use("/api/v3/post/comments", routes.commentRoutes)
 app.use("/api/v3/user/notifications", routes.notifyRoutes)
 
-http.listen(5000, () => {
+http.listen(process.env.PORT, () => {
     console.log("Server runs at port 5000")
 })
 
