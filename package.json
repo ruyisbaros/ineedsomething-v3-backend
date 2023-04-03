@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production pm2 start server.js -i 5  --watch"
+    "start1": "NODE_ENV=production pm2 start server.js -i 5  --watch",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
