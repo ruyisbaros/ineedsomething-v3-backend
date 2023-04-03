@@ -2,7 +2,7 @@ const Notification = require("../models/notificationModel")
 
 const notificationCtrl = {
     createNotify: async (req, res) => {
-        const { from, to, content, url } = req.body
+        const { from, to, content } = req.body
         try {
             const not = await Notification.create({
                 from, to, content

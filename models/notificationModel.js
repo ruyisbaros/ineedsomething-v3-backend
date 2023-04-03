@@ -9,12 +9,12 @@ const notifySchema = new mongoose.Schema({
     from: {
         type: ObjectId,
         ref: "User",
-        required: true
+
     },
     to: {
         type: ObjectId,
         ref: "User",
-        required: true
+
     },
     read: {
         type: Boolean,

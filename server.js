@@ -15,12 +15,13 @@ const app = express()
 //Sockets
 const http = require("http").createServer(app)
 const io = new Server(http, {
-    pingTimeout: 60000,
+    pingTimeout: 6000,
     cors: {
         origin: `${process.env.FRONT_URL}`,
         credentials: true,
         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     },
+    pingInterval: 3000
 })
 
 //Related middleware
@@ -71,7 +72,8 @@ mongoose.set('strictQuery', false);
 //Socket functions
 
 io.on("connection", (socket) => {
-    //console.log("Connected to: ", socket.id)
+    socket.emit("connection", null)
+    console.log("Connected to: ", socket.id)
     SocketServer(socket)
 })
 //Routes
@@ -90,18 +92,20 @@ http.listen(5000, () => {
 
 /* const wss = new WebSocketServer({
     httpServer: http
-})
+}) */
 
-const clients = {}
+/* const clients = new Map()
 const getUniqID = () => {
     const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
 
-    return s4() + s4() + "-" + s4()
+    return s4() + s4() + '-' + s4();
 }
 wss.on("request", (request) => {
     const userID = getUniqID()
     console.log((new Date()) + "request received from: " + request.origin)
 
     const connection = request.accept(null, request.origin)
-    clients[userID]=connection
-}) */
+    clients.set(userID, connection)
+    console.log('connected: ' + userID + ' in ' + JSON.stringify(clients))
+    //console.log(wss.connections)
+})  */
