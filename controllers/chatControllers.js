@@ -1,6 +1,7 @@
 const Chat = require("../models/chatMessageModel")
 const Conversation = require("../models/conversationModel")
 const asyncHandler = require("express-async-handler")
+const mongoose = require("mongoose")
 
 class APIfeatures {
     constructor(query, queryString) {
@@ -20,7 +21,7 @@ class APIfeatures {
 exports.createNewMessage = asyncHandler(async (req, res) => {
     const { recipient, chatMessage, images } = req.body
 
-    if (!recipient || (!chatMessage.trim() && images.length === 0)) return;
+    if (!recipient || !chatMessage.trim()) return;
 
     const newConversation = await Conversation.findOneAndUpdate(
         {
@@ -36,14 +37,16 @@ exports.createNewMessage = asyncHandler(async (req, res) => {
         conversation: newConversation._id,
         recipient, chatMessage, images,
     })
-
-    res.status(200).json(newMessage)
+    const returnedMessage = await Chat.findById(newMessage._id)
+        .populate("sender", "-password")
+        .populate("recipient", "-password")
+    res.status(200).json(returnedMessage)
 })
 
 exports.getConversations = asyncHandler(async (req, res) => {
 
     const conversations = await Conversation.find({ recipients: req.user._id }).sort("updatedAt").populate("recipients", "-password")
-
+    console.log(conversations)
     res.status(200).json(conversations)
 
 })

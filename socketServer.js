@@ -113,6 +113,45 @@ const SocketServer = (socket) => {
         }
     })
 
+    /* ---------CHATS------- */
+    //New Message
+    socket.on("newMessage", ({ data: newMessage, user: payload }) => {
+        console.log(newMessage);
+        const user = users.find(user => user.id === newMessage.recipient._id)
+        console.log(user);
+        if (user) {
+            socket.to(`${user.socketId}`).emit('newMessageToClient', newMessage)
+        }
+    })
+    //Delete Message
+    socket.on("deleteAMessage", newMessage => {
+        //console.log(newMessage);
+        const user = users.find(user => user.id === newMessage.recipient._id)
+        //console.log(user);
+        if (user) {
+            socket.to(`${user.socketId}`).emit('deleteAMessageToClient', newMessage)
+        }
+    })
+
+    //Typing
+    socket.on("openTyping", ({ id, id2 }) => {
+        console.log(id, id2);
+        const user = users.find(user => user.id === id)
+        //console.log(user);
+        if (user) {
+            socket.to(`${user.socketId}`).emit('openTypingToClient', id2)
+        }
+    })
+    //Stop Typing
+    socket.on("closeTyping", userId => {
+        //console.log(userId);
+        const user = users.find(user => user.id === userId)
+        //console.log(user);
+        if (user) {
+            socket.to(`${user.socketId}`).emit('closeTypingToClient')
+        }
+    })
+
 }
 
 module.exports = SocketServer
