@@ -13,6 +13,7 @@ const { Server } = require("socket.io")
 
 const app = express()
 //Sockets
+/* https://ineedsomething.herokuapp.com/ */
 const http = require("http").createServer(app)
 const io = new Server(http, {
     pingTimeout: 6000,
@@ -82,6 +83,7 @@ app.use("/api/v3/auth", routes.authRoutes)
 app.use("/api/v3/posts", routes.postRoutes)
 app.use("/api/v3/users", routes.userRoutes)
 app.use("/api/v3/images", routes.imageRoutes)
+app.use("/api/v3/chats", routes.chatRoutes)
 app.use("/api/v3/post/reacts", routes.reactRoutes)
 app.use("/api/v3/post/comments", routes.commentRoutes)
 app.use("/api/v3/user/notifications", routes.notifyRoutes)

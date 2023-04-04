@@ -17,7 +17,7 @@ const SocketServer = (socket) => {
 
     //Like post
     socket.on("likePost", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
         if (clients.length > 0) {
             clients.forEach(client => {
@@ -81,7 +81,7 @@ const SocketServer = (socket) => {
     })
 
     socket.on("viewProfileNotification", (payload) => {
-        console.log(payload)
+        //console.log(payload)
         const clients = users.filter(user => user.id !== payload.id)
         //console.log("users", clients)
         if (clients.length > 0) {
