@@ -345,7 +345,7 @@ const userCtrl = {
     userStatusOnline: async (req, res) => {
         try {
             const { userId } = req.params
-            console.log(userId)
+            //console.log(userId)
             await User.findByIdAndUpdate(mongoose.Types.ObjectId(userId), { isOnline: true })
             res.status(200).json({ message: "Ok" })
         } catch (error) {
