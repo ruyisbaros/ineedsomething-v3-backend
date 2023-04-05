@@ -6,13 +6,17 @@ const SocketServer = (socket) => {
         const user = users.find(user => user.id === id)
         if (!user) {
             users.push({ id, socketId: socket.id })
+            socket.emit("onlineUsers", users)
         }
         //console.log(users)
     })
 
     socket.on("disconnect", () => {
+        const user = users.find(u => u.socketId === socket.id)
         users = users.filter(user => user.socketId !== socket.id)
-        //console.log("disconnection")
+        console.log(users)
+        console.log(user)
+        socket.emit("offlineUsers", user?.id)
     })
 
     //Like post
@@ -116,20 +120,21 @@ const SocketServer = (socket) => {
     /* ---------CHATS------- */
     //New Message
     socket.on("newMessage", ({ data: newMessage, user: payload }) => {
-        console.log(newMessage);
+        //console.log(newMessage);
         const user = users.find(user => user.id === newMessage.recipient._id)
-        console.log(user);
+        //console.log(user);
         if (user) {
             socket.to(`${user.socketId}`).emit('newMessageToClient', newMessage)
         }
     })
     //Delete Message
-    socket.on("deleteAMessage", newMessage => {
-        //console.log(newMessage);
-        const user = users.find(user => user.id === newMessage.recipient._id)
-        //console.log(user);
+    socket.on("deleteAMessageSocket", (message) => {
+        //console.log("hello it is delete message")
+        //console.log(message);
+        const user = users.find(user => user.id === message.recipient._id)
+       // console.log(user);
         if (user) {
-            socket.to(`${user.socketId}`).emit('deleteAMessageToClient', newMessage)
+            socket.to(`${user.socketId}`).emit('deleteAMessageToClient', message._id)
         }
     })
 

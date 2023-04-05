@@ -160,6 +160,11 @@ const authCtrl = {
     },
     logout: async (req, res) => {
         try {
+            const token = req.session.jwtR
+            //base64.decode(token).split()
+            const { id } = jwt.verify(token, `${process.env.JWT_ACCESS_KEY}`)
+
+            await User.findByIdAndUpdate(id, { isOnline: false })
             req.session = {
                 jwtR: null,
                 jwt: null

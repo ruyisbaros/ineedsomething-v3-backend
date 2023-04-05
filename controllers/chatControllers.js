@@ -46,7 +46,7 @@ exports.createNewMessage = asyncHandler(async (req, res) => {
 exports.getConversations = asyncHandler(async (req, res) => {
 
     const conversations = await Conversation.find({ recipients: req.user._id }).sort("updatedAt").populate("recipients", "-password")
-    console.log(conversations)
+    //console.log(conversations)
     res.status(200).json(conversations)
 
 })

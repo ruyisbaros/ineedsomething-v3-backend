@@ -342,7 +342,26 @@ const userCtrl = {
             res.status(500).json({ message: error.message })
         }
     },
-
+    userStatusOnline: async (req, res) => {
+        try {
+            const { userId } = req.params
+            console.log(userId)
+            await User.findByIdAndUpdate(mongoose.Types.ObjectId(userId), { isOnline: true })
+            res.status(200).json({ message: "Ok" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
+    userStatusOffline: async (req, res) => {
+        try {
+            const { userId } = req.params
+            console.log(userId)
+            await User.findByIdAndUpdate(mongoose.Types.ObjectId(userId), { isOnline: false })
+            res.status(200).json({ message: "Ok" })
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+        }
+    },
 }
 exports.notifySender = (not) => {
     return not;
