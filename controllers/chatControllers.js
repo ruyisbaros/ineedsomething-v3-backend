@@ -59,9 +59,23 @@ exports.getChatMessages = asyncHandler(async (req, res) => {
                 { sender: req.user._id, recipient: req.params.id },
                 { sender: req.params.id, recipient: req.user._id },
             ]
-        }).sort("createdAt").populate("recipient sender", "-password")
+        }).populate("recipient sender", "-password")
 
     res.status(200).json(chats)
+
+})
+exports.makeChatMessagesRead = asyncHandler(async (req, res) => {
+
+    const chats = await Chat.find(
+        {
+            recipient: req.params.id
+        })
+    const uptChats = chats.map(async (cht) => (
+        await Chat.findByIdAndUpdate(cht._id, { isRead: true }, { new: true })
+            .sort("createdAt").populate("recipient sender", "-password")
+    ))
+    const returned = await Promise.all(uptChats)
+    res.status(200).json(returned)
 
 })
 

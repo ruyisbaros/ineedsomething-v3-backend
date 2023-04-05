@@ -19,7 +19,7 @@ router.patch("/accept_friend_request/:id", protect, userCtrl.acceptFriendRequest
 router.patch("/follow_un_follow/:id", protect, userCtrl.followUnFollow)
 router.patch("/un_friend/:id", protect, userCtrl.unFriend)
 router.patch("/delete_friend_request/:id", protect, userCtrl.ignoreFriendRequest)
-router.get("/update_status_on/:userId", protect, userCtrl.userStatusOnline)
-router.get("/update_status_off/:userId", protect, userCtrl.userStatusOffline)
+router.get("/update_status_on/:userId", userCtrl.userStatusOnline)
+router.get("/update_status_off/:userId", userCtrl.userStatusOffline)
 
 module.exports = router

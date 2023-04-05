@@ -8,7 +8,7 @@ const SocketServer = (socket) => {
             users.push({ id, socketId: socket.id })
             socket.emit("onlineUsers", users)
         }
-        //console.log(users)
+        console.log(users)
     })
 
     socket.on("disconnect", () => {
@@ -125,6 +125,15 @@ const SocketServer = (socket) => {
         //console.log(user);
         if (user) {
             socket.to(`${user.socketId}`).emit('newMessageToClient', newMessage)
+        }
+    })
+    //Read Message
+    socket.on("makeMessageRead", (id) => {
+        console.log(id);
+        const user = users.find(user => user.id === id)
+        //console.log(user);
+        if (user) {
+            socket.to(`${user.socketId}`).emit('makeMessageReadToClient', id)
         }
     })
     //Delete Message
