@@ -148,11 +148,11 @@ const SocketServer = (socket) => {
     })
 
     //Add online list
-    socket.on("addOnlineList", (id) => {
-        const user = users.find(user => user.id === id)
+    socket.on("addOnlineList", (payload) => {
+        const user = users.find(user => user.id === payload.target)
         //console.log(user);
         if (user) {
-            socket.to(`${user.socketId}`).emit('addOnlineListToClient', id)
+            socket.to(`${user.socketId}`).emit('addOnlineListToClient', payload.me)
         }
     })
 
