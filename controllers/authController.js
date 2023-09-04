@@ -137,7 +137,7 @@ const authCtrl = {
             //const access_token = generateAccessToken({ id: loggedUser._id })
             //console.log(req.session)
             const token = req.session?.jwtR
-            //console.log(req.session, token)
+            console.log(req.session, token)
             if (!token) return res.status(500).json({ message: "Please login again" })
             const { id } = jwt.verify(token, `${process.env.JWT_REFRESH_KEY}`)
             if (!id) return res.status(500).json({ message: "Please login again" })
